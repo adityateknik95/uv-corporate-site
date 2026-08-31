@@ -1,34 +1,27 @@
-import { Instrument_Serif, Inter_Tight } from 'next/font/google';
+import { Inter_Tight } from 'next/font/google';
 
 /**
- * Two families, deliberately unalike.
+ * One family, weights 300-700.
  *
- * Instrument Serif appears in exactly two places on the finished page -- the
- * hero headline and the timeline years -- which makes it an accent typeface
- * rather than a theme. The timeline is the signature section and its years are
- * the strongest content in the brief; a serif gives them a documentary,
- * archival register that a grotesque cannot.
+ * The reference audit settled this: kyndryl.com/in/en sets the entire page in
+ * a single neutral grotesque and gets its hierarchy from size, weight and
+ * space rather than from a second typeface. The brief asks for a faithful
+ * rebuild whose only deliberate departure is colour, so the Instrument Serif
+ * display face from the first pass is gone -- it was a type departure, not a
+ * colour one.
  *
- * Inter Tight carries everything else: nav, body, labels, UI. Its tighter
- * default tracking holds up at the small sizes a dense corporate page needs.
+ * Inter Tight rather than the reference's Roboto: it is the same category of
+ * neutral grotesque and covers the same 300-700 range, without the build
+ * reading as a straight clone of their font stack.
  *
- * Both are self-hosted by next/font at build time, so there is no render-
- * blocking request to Google and no layout shift on load.
+ * Self-hosted by next/font at build time, so there is no render-blocking
+ * request to Google and no layout shift on load.
  */
-
-export const instrumentSerif = Instrument_Serif({
-  subsets: ['latin'],
-  weight: '400',
-  // Roman only. The design never sets display type in italic, and shipping the
-  // italic face means preloading a font file nothing on the page uses.
-  display: 'swap',
-  variable: '--font-instrument-serif',
-});
-
 export const interTight = Inter_Tight({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '700'],
   display: 'swap',
   variable: '--font-inter-tight',
 });
 
-export const fontVariables = `${instrumentSerif.variable} ${interTight.variable}`;
+export const fontVariables = interTight.variable;

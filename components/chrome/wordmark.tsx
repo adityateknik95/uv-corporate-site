@@ -40,8 +40,8 @@ export function Wordmark({ className = '' }: { className?: string }) {
             ? // Bracketed and muted on purpose: the real name is pending, and a
               // stand-in that looks like a finished wordmark invites nobody to
               // notice it is missing.
-              'font-mono text-sm tracking-tight text-muted transition-colors group-hover:text-fg'
-            : 'text-lg font-semibold tracking-tight'
+              'font-mono text-small tracking-tight text-muted transition-colors group-hover:text-fg'
+            : 'text-h4 font-semibold tracking-tight'
         }
       >
         {site.companyName}

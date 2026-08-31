@@ -1,5 +1,6 @@
 import type { SiteContent } from '@/content';
 import { Wordmark } from './wordmark';
+import { Container } from '@/components/layout/container';
 
 /**
  * Multi-column links, social, legal row, back to top.
@@ -13,22 +14,22 @@ export function SiteFooter({ content }: { content: SiteContent }) {
 
   return (
     <footer className="border-t border-rule">
-      <div className="mx-auto max-w-[var(--container-page)] px-5 sm:px-8 lg:px-12">
+      <Container>
         <div className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1fr_repeat(4,minmax(0,auto))] lg:gap-12 lg:py-20">
           <div>
             <Wordmark />
-            <p className="mt-5 text-sm text-muted measure-tight">{content.shortDescription}</p>
+            <p className="mt-5 text-small text-muted measure-tight">{content.shortDescription}</p>
           </div>
 
           {content.footer.columns.map((column) => (
             <nav key={column.heading} aria-label={column.heading}>
-              <h2 className="text-2xs uppercase text-muted">{column.heading}</h2>
+              <h2 className="text-label uppercase text-muted">{column.heading}</h2>
               <ul className="mt-4 space-y-2.5">
                 {column.links.map((link) => (
                   <li key={link.href + link.label}>
                     <a
                       href={link.href}
-                      className="text-sm text-fg underline decoration-transparent decoration-1 underline-offset-4 transition-colors hover:decoration-brass"
+                      className="text-small text-fg underline decoration-transparent decoration-1 underline-offset-4 transition-colors hover:decoration-brass"
                     >
                       {link.label}
                     </a>
@@ -46,7 +47,7 @@ export function SiteFooter({ content }: { content: SiteContent }) {
                 <a
                   href={link.href}
                   {...(link.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
-                  className="text-sm text-muted transition-colors hover:text-fg"
+                  className="text-small text-muted transition-colors hover:text-fg"
                 >
                   {link.label}
                   {link.external ? <span className="sr-only"> (opens in a new tab)</span> : null}
@@ -57,7 +58,7 @@ export function SiteFooter({ content }: { content: SiteContent }) {
 
           <a
             href="#top"
-            className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-fg"
+            className="inline-flex items-center gap-2 text-small text-muted transition-colors hover:text-fg"
           >
             {content.footer.backToTopLabel}
             <svg viewBox="0 0 10 12" width="9" height="11" aria-hidden="true" fill="none">
@@ -68,20 +69,20 @@ export function SiteFooter({ content }: { content: SiteContent }) {
         </div>
 
         <div className="flex flex-col gap-4 border-t border-rule py-7 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-muted">
+          <p className="text-utility text-muted">
             © {year} {content.companyName}. {content.footer.copyright}
           </p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             {content.footer.legal.map((link) => (
               <li key={link.label}>
-                <a href={link.href} className="text-xs text-muted transition-colors hover:text-fg">
+                <a href={link.href} className="text-utility text-muted transition-colors hover:text-fg">
                   {link.label}
                 </a>
               </li>
             ))}
           </ul>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

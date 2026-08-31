@@ -8,6 +8,128 @@ wordmark, imagery or copy is taken from it. Nothing in this repo renders the wor
 
 ---
 
+## Reference audit — kyndryl.com/in/en
+
+Measured in-browser at a 1280px viewport on 2026-08-31, not eyeballed from screenshots. These
+numbers are the spec; the black build is checked against them.
+
+### Container and grid
+
+| Property | Reference |
+|---|---|
+| Container max-width | **1460px** |
+| Page gutter | **40px** at 1280 (wordmark sits at x=40) |
+| Content width at 1280 | 1265px — near edge-to-edge until the cap engages |
+| Full-bleed | Hero, display-marker bands, partner track, footer |
+| Constrained | Everything else, inside the 1460 container |
+
+### Vertical rhythm
+
+Section padding lands on a **16px scale**. Observed values, top/bottom:
+`48/64`, `64/64`, `96/128`, `128/80`, `144/144`, `144/96`, and `0/180` on the display-marker bands.
+
+Working rule: major sections get **96–144px** top and bottom on desktop; bands carrying a display
+marker get much more bottom (180px) than top.
+
+Micro-rhythm inside a card: **eyebrow → heading = 8px**. Heading → body ≈ 16px.
+
+### Type scale
+
+Single family throughout: Roboto, at weights 300 / 400 / 500 / 700. There is no serif on the page.
+
+| Role | Size | Weight | Line-height | Tracking |
+|---|---|---|---|---|
+| Display section marker | **126.5px** | 700 | 94.9 (**0.75**) | normal, lowercase |
+| Section heading | 44px | 400 | 46.6 (1.06) | −0.22px |
+| Hero H1 | **40px** | **300** | 51.2 (1.28) | −0.4px |
+| Large sub-heading | 40px | 300 | 48 | −0.2px |
+| Card heading (large) | 32px | 400 | 33.9 (1.06) | −0.16px |
+| Card heading | 24px | 400 | 30 (1.25) | −0.12px |
+| Pull quote | 24px | 300 | 32 | +0.16px |
+| Lead body | 18px | 400 | 26 (1.44) | normal |
+| Body | 16px | 400 | 24 (1.5) | normal |
+| Eyebrow label | **12px** | 500 | 18 | **+0.6px**, uppercase |
+
+Two things worth naming. The hero is **light weight at 40px**, not heavy — the page gets its
+authority from size and space, not from bold. And the eyebrow is the only uppercase, tracked-out
+element in the system.
+
+### The display marker — the device I had missed
+
+Three major sections are introduced by a **126px, weight 700, lowercase** heading that runs the
+full container width and bleeds 8px past the left edge. It is set **tone-on-tone**: beige
+(`#F2F1EE`) on white, white on beige. Near-zero contrast, functioning as a typographic band rather
+than as text you read.
+
+This is what stops a 10,600px page from reading as an undifferentiated stack, and it is the single
+most characteristic thing about the layout. It translates to black almost perfectly: `surface` on
+`ground`, and `ground` on `surface`.
+
+### Colour and the light/dark alternation
+
+The brief describes Kyndryl as alternating white with dark. Measured, it is subtler than that:
+
+| Band | Value |
+|---|---|
+| White sections | `#FFFFFF` |
+| Beige sections | `#F2F1EE` |
+| Off-white variant | `#F9F9F9` |
+| One accent band | `#E4F4F1` pale mint |
+| Primary text | `#3D3C3C` — not black |
+| Accent (primary CTA) | `#4CDD84` mint, with `#042315` text |
+
+Band order down the page: hero image → white → beige → white → mint → beige → footer beige, plus
+image-backed dark sections for the recognition and stories carousels.
+
+**The alternation is a ~5% luminance step, not a light/dark flip.** That is the finding that
+matters most for the translation: I do not need dramatic dark/darker sections, I need a *small*
+elevation step used consistently. `ground #14120E` → `surface #1D1A15` is almost exactly the same
+relative step, so the existing token pair is right — it just has to actually get used.
+
+### Buttons
+
+| Type | Height | Radius | Fill | Type |
+|---|---|---|---|---|
+| Primary | 44px | **66px (full pill)** | mint `#4CDD84`, dark text | 14px / 500 |
+| Secondary | 50px | 4px | transparent, 0.8px border | 16px / 400 |
+
+### Header
+
+- **One fixed row, 76px tall**, `z-index: 10`, **transparent over the hero** — no background fill.
+- **There is no separate utility strip.** Utility items (investors link, locale, bookmark, search)
+  sit in the same row, right-aligned, at 12px. Nav links are 14px/400.
+- Wordmark x=40, nav starts x=143, CTA pill right-aligned.
+
+### Motion
+
+Everything measured is short and interaction-driven:
+
+- `color`, `background-color`, `border-color` — **200ms ease-in-out**
+- `opacity` — **300ms ease**
+- `background-size` — **350ms ease** (image zoom on card hover)
+
+No scroll-triggered entrance animation on section content. Carousels advance, the nav condenses,
+the FAQ expands. Nothing over 400ms. This confirms the brief: reproduce these, add one signature
+moment on the timeline, and keep everything else quiet.
+
+### Where this build must change
+
+Recorded against what Phases 0–1 already shipped:
+
+| Built | Reference | Action |
+|---|---|---|
+| Separate 36px utility strip + 64px nav = 102px | One 76px row, utility items inline | Merge into one row |
+| Header solid `ground` | Transparent over hero, fills on scroll | Rebuild |
+| Container 1344px (84rem) | 1460px | Change token |
+| Gutter 20/32/48px | 40px | Change token |
+| Instrument Serif display + Inter Tight | One grotesque, weights 300–700 | Drop the serif |
+| Left-rail spine with section numbers | No rail; display markers instead | Replace |
+| Hero headline at 3xl/400 serif | 40px / weight 300 | Re-spec |
+| No display markers | 126px lowercase tone-on-tone | Add |
+
+
+---
+
 ## Phase 0 — foundation and design plan
 
 ### The company, in one line
@@ -416,3 +538,61 @@ this, not the code: assertions were rewritten to check state (`aria-expanded`) r
 presence. Motion end-states could not be visually confirmed here and should be checked in a real
 browser before shipping. This is also part of why occluding panels no longer animate opacity —
 the components now degrade correctly when frames are dropped.
+
+---
+
+## Rebuild against the reference audit
+
+The brief changed from "structural reference" to **faithful rebuild**, with colour as the only
+deliberate departure. Phases 0 and 1 were re-cut against the measured audit above. What changed
+and why:
+
+| Was | Now | Because |
+|---|---|---|
+| Separate 36px utility strip over a 64px nav (102px) | One fixed 76px row, utility items inline | The reference has no strip. See the note below. |
+| Header solid `ground`, sticky | Fixed, **transparent**, fills on scroll | The reference runs hero media under a transparent header. A solid header cannot do that. |
+| Container 1344px (84rem) | **1460px** | Measured. |
+| Gutter 20/32/48px | 20/32/**40px** | Measured — the wordmark sits at x=40. |
+| Instrument Serif + Inter Tight | One grotesque, weights 300–700 | The reference sets the whole page in a single neutral grotesque. A serif is a *type* departure, and only colour was permitted. |
+| T-shirt type scale (`2xs`…`4xl`) | Role-named steps at measured values | `text-h1` cannot be mistaken for `text-h2`; sizes/weights/tracking are the reference's. |
+| Left-rail spine with section numbers | **Display markers** | The reference has no rail. The 126px lowercase tone-on-tone marker is the device actually carrying its rhythm. |
+| Every section on one ground | Alternating `ground` / `surface` bands | Rebuilds the white/beige alternation as elevation, which is the whole point of the black translation. |
+| Radius capped at 4px | 4px, plus a **pill** for the primary CTA | The reference rounds buttons only: primary is a full pill, secondary 4px. |
+| Hairline `#332C22` (~14% white) | `#2E2A24` (~10% white) | The brief specifies 8–12% white. Still passes the perceptibility check at 1.31:1. |
+
+### The utility bar — a conflict between the brief and the reference
+
+The brief's section inventory lists a "Utility bar — thin top strip" as section 1. The page it was
+derived from has no such strip: utility items sit inline in the single 76px row, right-aligned, at
+12px against the nav's 14px. The brief's overriding instruction is to match the reference, so the
+build follows the reference. It stays its own component (`UtilityItems`), so restoring a separate
+strip is a one-file change if that reading was wrong.
+
+### Verified against the reference
+
+Measured in my build at 1440px and compared to the reference's measured values:
+
+| Step | Reference | This build |
+|---|---|---|
+| Display marker | 126.5px / 700 / lh 94.9 | 126px / 700 / lh 94.5 |
+| Hero h1 | 40px / 300 / 51.2 / −0.4px | 40px / 300 / 51.2 / −0.4px |
+| Section h2 | 44px / 400 / 46.6 / −0.22px | 44px / 400 / 46.6 / −0.22px |
+| Eyebrow | 12px / 500 / 18 / +0.6px | 12px / 500 / 18 / +0.6px |
+| Nav link | 14px / 400 | 14px / 400 |
+| Container | 1460px | 1460px |
+| Gutter | 40px | 40px |
+| Header | 76px, fixed, transparent | 76px, fixed, transparent |
+
+Also checked after the refactor: one header row, one CTA (a duplicate was introduced when the
+header took ownership of it and caught here), no `inert` leftovers from the retired collapsing
+strip, bands alternate between exactly two values, all four display markers are `aria-hidden` so
+the decorative type stays out of the heading outline, one `h1`, no skipped heading levels, mega
+menu still opens and closes on Escape, and no horizontal overflow at 360px.
+
+### Still to do against the audit
+
+- **Imagery treatment.** The audit calls for one consistent scrim/desaturation rule for
+  photography. Nothing on the page uses imagery yet; this lands with the hero in Phase 2.
+- **Partner logos** as monochrome white at reduced opacity, brightening on hover — Phase 4.
+- The reference's own section order beyond the shell (recognition before stories, feature banner
+  after how-we-help) is reflected in the page skeleton and gets filled in Phases 3–4.

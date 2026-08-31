@@ -3,22 +3,26 @@
 import { useEffect, useRef } from 'react';
 import type { SiteContent } from '@/content';
 import { useScrolled } from '@/lib/hooks';
-import { UtilityBar } from './utility-bar';
+import { Container } from '@/components/layout/container';
+import { UtilityItems, SearchTrigger } from './utility-bar';
 import { PrimaryNav } from './primary-nav';
 import { MobileNav } from './mobile-nav';
 import { Wordmark } from './wordmark';
 
 /**
- * Sticky header that condenses on scroll: the utility bar collapses to nothing
- * and the nav row stays. Collapsing is done with a 0fr/1fr grid row rather
- * than an animated max-height, so the transition is driven by the content's
- * own measured size and there is no magic number to keep in sync.
+ * One fixed 76px row, matching the reference.
  *
- * Its height is published as `--header-height` because the header is not a
- * fixed size: the utility bar collapses on scroll. Anything that has to sit
- * directly beneath it -- the mobile panel now, the jump-to nav in Phase 3 --
- * reads the measured value instead of hardcoding a guess that is wrong in one
- * of the two states.
+ * The earlier build stacked a separate 36px utility strip on a 64px nav. The
+ * reference has neither: it is a single row, transparent over the hero, with
+ * utility items inline on the right. Transparent-over-hero is why the header
+ * cannot simply be `bg-ground` -- the hero media has to run underneath it --
+ * so the background and hairline fade in only once the page has scrolled.
+ *
+ * That also retires the `inert` collapsing bar from the previous pass: there
+ * is no longer a strip to collapse, so nothing can hide focusable links.
+ *
+ * The height is published as `--header-height` for anything that has to sit
+ * directly beneath it: the mobile panel now, the jump-to nav in Phase 3.
  */
 export function SiteHeader({ content }: { content: SiteContent }) {
   const scrolled = useScrolled(24);
@@ -38,39 +42,35 @@ export function SiteHeader({ content }: { content: SiteContent }) {
   }, []);
 
   return (
-    <header ref={headerRef} className="sticky top-0 z-50 bg-ground">
-      <div
-        className="grid transition-[grid-template-rows] duration-300 ease-[var(--ease-out-quiet)]"
-        style={{ gridTemplateRows: scrolled ? '0fr' : '1fr' }}
-        // `inert`, not just aria-hidden. The collapsed bar still occupies the
-        // tab order otherwise, so a keyboard user tabs into links they cannot
-        // see. inert removes it from both the a11y tree and focus order.
-        inert={scrolled}
-      >
-        <div className="overflow-hidden">
-          <UtilityBar content={content.utilityBar} />
+    <header
+      ref={headerRef}
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-200 ease-in-out ${
+        scrolled ? 'border-rule bg-ground' : 'border-transparent bg-transparent'
+      }`}
+    >
+      <Container className="flex h-[var(--spacing-header)] items-center gap-6">
+        <Wordmark />
+
+        <div className="hidden lg:block">
+          <PrimaryNav content={content.nav} />
         </div>
-      </div>
 
-      <div className="relative border-b border-rule">
-        <div className="mx-auto flex h-[var(--spacing-header)] max-w-[var(--container-page)] items-center justify-between gap-6 px-5 sm:px-8 lg:px-12">
-          <Wordmark />
+        <div className="ml-auto flex items-center gap-2 lg:gap-4">
+          <UtilityItems content={content.utilityBar} />
+          <SearchTrigger label={content.utilityBar.searchLabel} />
 
-          <div className="hidden lg:block">
-            <PrimaryNav content={content.nav} />
-          </div>
+          {/* Reference primary button: 44px tall, full pill, accent fill with
+              dark text. The only pill on the page -- everything else is 4px. */}
+          <a
+            href={content.nav.cta.href}
+            className="hidden h-11 items-center rounded-pill bg-brass px-5 text-small font-medium text-ground transition-colors duration-200 ease-in-out hover:bg-fg sm:inline-flex"
+          >
+            {content.nav.cta.label}
+          </a>
 
-          <div className="flex items-center gap-2 lg:hidden">
-            <a
-              href={content.nav.cta.href}
-              className="hidden h-9 items-center rounded-sm border border-rule px-4 text-sm text-fg transition-colors hover:border-brass hover:text-brass sm:inline-flex"
-            >
-              {content.nav.cta.label}
-            </a>
-            <MobileNav nav={content.nav} utility={content.utilityBar} />
-          </div>
+          <MobileNav nav={content.nav} utility={content.utilityBar} />
         </div>
-      </div>
+      </Container>
     </header>
   );
 }

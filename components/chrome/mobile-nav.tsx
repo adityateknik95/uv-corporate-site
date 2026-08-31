@@ -61,7 +61,7 @@ export function MobileNav({
             // panel's own close button in one of the two states.
             className="fixed inset-x-0 bottom-0 top-[var(--header-height,4rem)] z-40 overflow-y-auto overscroll-contain border-t border-rule bg-ground lg:hidden"
           >
-            <nav aria-label="Primary" className="px-5 py-6 sm:px-8">
+            <nav aria-label="Primary" className="px-5 py-6 sm:px-8 lg:px-[var(--spacing-gutter)]">
               <ul className="divide-y divide-rule border-y border-rule">
                 {nav.items.map((item, index) => {
                   const hasPanel = Boolean(item.columns?.length);
@@ -73,7 +73,7 @@ export function MobileNav({
                         <a
                           href={item.href}
                           onClick={() => setOpen(false)}
-                          className="flex min-h-14 items-center text-md text-fg"
+                          className="flex min-h-14 items-center text-lead text-fg"
                         >
                           {item.label}
                         </a>
@@ -88,7 +88,7 @@ export function MobileNav({
                         onClick={() => setExpanded(isExpanded ? null : index)}
                         aria-expanded={isExpanded}
                         aria-controls={`mobile-section-${index}`}
-                        className="flex min-h-14 w-full items-center justify-between gap-4 text-left text-md text-fg"
+                        className="flex min-h-14 w-full items-center justify-between gap-4 text-left text-lead text-fg"
                       >
                         {item.label}
                         <Plus open={isExpanded} />
@@ -111,7 +111,7 @@ export function MobileNav({
                                       heading outline -- see mega-menu.tsx. */}
                                   <p
                                     id={`mobile-${index}-${slug(column.heading)}`}
-                                    className="text-2xs uppercase text-muted"
+                                    className="text-label uppercase text-muted"
                                   >
                                     {column.heading}
                                   </p>
@@ -124,7 +124,7 @@ export function MobileNav({
                                         <a
                                           href={link.href}
                                           onClick={() => setOpen(false)}
-                                          className="block text-sm text-fg"
+                                          className="block text-small text-fg"
                                         >
                                           {link.label}
                                         </a>
@@ -145,7 +145,7 @@ export function MobileNav({
               <a
                 href={nav.cta.href}
                 onClick={() => setOpen(false)}
-                className="mt-8 flex h-12 items-center justify-center rounded-sm bg-brass px-5 text-sm font-medium text-ground"
+                className="mt-8 flex h-12 items-center justify-center rounded-sm bg-brass px-5 text-small font-medium text-ground"
               >
                 {nav.cta.label}
               </a>
@@ -156,7 +156,7 @@ export function MobileNav({
                     <a
                       href={link.href}
                       onClick={() => setOpen(false)}
-                      className="text-xs text-muted"
+                      className="text-utility text-muted"
                     >
                       {link.label}
                     </a>

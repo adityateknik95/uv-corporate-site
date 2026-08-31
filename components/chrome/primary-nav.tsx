@@ -15,6 +15,10 @@ import { MegaMenu } from './mega-menu';
  * plain button with `aria-expanded` / `aria-controls`, which is what screen
  * readers already handle well here.
  *
+ * The primary CTA is not rendered here: the header row owns it, matching the
+ * reference where the CTA pill sits with the utility items on the right rather
+ * than at the end of the nav list.
+ *
  * Hover opens the panel only on devices that actually hover -- on touch,
  * pointerenter fires on tap and would open a panel the user then has to
  * dismiss before their tap registers.
@@ -80,7 +84,7 @@ export function PrimaryNav({ content }: { content: NavContent }) {
                 <li key={item.label}>
                   <a
                     href={item.href}
-                    className="inline-flex h-16 items-center px-3.5 text-sm text-muted transition-colors hover:text-fg"
+                    className="inline-flex h-[var(--spacing-header)] items-center px-3.5 text-small text-muted transition-colors hover:text-fg"
                   >
                     {item.label}
                   </a>
@@ -99,7 +103,7 @@ export function PrimaryNav({ content }: { content: NavContent }) {
                   aria-expanded={isOpen}
                   aria-controls={panelId}
                   onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className={`relative inline-flex h-16 items-center gap-1.5 px-3.5 text-sm transition-colors ${
+                  className={`relative inline-flex h-[var(--spacing-header)] items-center gap-1.5 px-3.5 text-small transition-colors ${
                     isOpen ? 'text-fg' : 'text-muted hover:text-fg'
                   }`}
                 >
@@ -119,13 +123,6 @@ export function PrimaryNav({ content }: { content: NavContent }) {
             );
           })}
         </ul>
-
-        <a
-          href={content.cta.href}
-          className="ml-4 inline-flex h-9 items-center rounded-sm border border-rule px-4 text-sm text-fg transition-colors hover:border-brass hover:text-brass"
-        >
-          {content.cta.label}
-        </a>
       </nav>
 
       <AnimatePresence>

@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from 'motion/react';
 import type { NavItem } from '@/content';
+import { Container } from '@/components/layout/container';
 
 const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
@@ -30,7 +31,7 @@ export function MegaMenu({ item, id, labelledBy }: { item: NavItem; id: string; 
       transition={{ duration: reduced ? 0.01 : 0.18, ease: [0.22, 1, 0.36, 1] }}
       className="absolute inset-x-0 top-full border-b border-rule bg-surface"
     >
-      <div className="mx-auto max-w-[var(--container-page)] px-5 sm:px-8 lg:px-12">
+      <Container>
         <div className="grid gap-px py-10 lg:grid-cols-4">
           {item.columns?.map((column) => (
             <div key={column.heading} className="lg:border-r lg:border-rule lg:pr-8 lg:last:border-r-0">
@@ -38,7 +39,7 @@ export function MegaMenu({ item, id, labelledBy }: { item: NavItem; id: string; 
                   before <h1> in the DOM, so real headings here would put an h3
                   ahead of the page title in the outline. aria-labelledby gets
                   the grouping announced without that. */}
-              <p id={`${id}-${slug(column.heading)}`} className="text-2xs uppercase text-muted">
+              <p id={`${id}-${slug(column.heading)}`} className="text-label uppercase text-muted">
                 {column.heading}
               </p>
               <ul aria-labelledby={`${id}-${slug(column.heading)}`} className="mt-4 space-y-2.5">
@@ -46,7 +47,7 @@ export function MegaMenu({ item, id, labelledBy }: { item: NavItem; id: string; 
                   <li key={link.href + link.label}>
                     <a
                       href={link.href}
-                      className="text-sm text-fg underline decoration-transparent decoration-1 underline-offset-4 transition-colors hover:decoration-brass"
+                      className="text-small text-fg underline decoration-transparent decoration-1 underline-offset-4 transition-colors hover:decoration-brass"
                     >
                       {link.label}
                     </a>
@@ -58,18 +59,18 @@ export function MegaMenu({ item, id, labelledBy }: { item: NavItem; id: string; 
 
           {item.feature ? (
             <div className="mt-6 border-t border-rule pt-6 lg:mt-0 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
-              <p className="text-lg text-fg measure-tight">{item.feature.heading}</p>
-              <p className="mt-2 text-sm text-muted measure-tight">{item.feature.body}</p>
+              <p className="text-h4 text-fg measure-tight">{item.feature.heading}</p>
+              <p className="mt-2 text-small text-muted measure-tight">{item.feature.body}</p>
               <a
                 href={item.feature.link.href}
-                className="mt-4 inline-block text-sm text-brass underline decoration-brass/40 underline-offset-4 transition-colors hover:decoration-brass"
+                className="mt-4 inline-block text-small text-brass underline decoration-brass/40 underline-offset-4 transition-colors hover:decoration-brass"
               >
                 {item.feature.link.label}
               </a>
             </div>
           ) : null}
         </div>
-      </div>
+      </Container>
     </motion.div>
   );
 }

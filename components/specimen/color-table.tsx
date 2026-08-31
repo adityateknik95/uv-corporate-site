@@ -51,15 +51,15 @@ export function ColorTable() {
             />
 
             <div className="min-w-0">
-              <p className="font-mono text-sm text-fg">--color-{token}</p>
-              <p className="font-mono text-xs text-muted">{value || ' '}</p>
+              <p className="font-mono text-small text-fg">--color-{token}</p>
+              <p className="font-mono text-utility text-muted">{value || ' '}</p>
             </div>
 
             <div className="col-span-2 min-w-0 sm:col-span-1">
-              <p className="text-sm text-muted measure">{role}</p>
+              <p className="text-small text-muted measure">{role}</p>
               {values && kind === 'text' ? <RatioRow token={token} values={values} /> : null}
               {kind === 'line' ? (
-                <p className="mt-3 font-mono text-2xs uppercase text-muted">
+                <p className="mt-3 font-mono text-label uppercase text-muted">
                   non-text — perceptibility only, no AA threshold
                 </p>
               ) : null}
@@ -85,7 +85,7 @@ function RatioRow({ token, values }: { token: string; values: Record<string, str
         const passesLarge = ratio >= AA_LARGE;
 
         return (
-          <li key={bg} className="font-mono text-xs">
+          <li key={bg} className="font-mono text-utility">
             <span className="text-muted">on {bg} </span>
             <span className={passesBody ? 'text-brass' : 'text-fg'}>{ratio.toFixed(2)}:1</span>
             <span className="text-muted">
