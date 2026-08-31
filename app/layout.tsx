@@ -20,8 +20,18 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={fontVariables}>
-      <body className="bg-ground text-fg font-sans antialiased">{children}</body>
+    <html lang="en-IN" id="top" className={fontVariables}>
+      <body className="bg-ground text-fg font-sans antialiased">
+        {/* Off-screen until focused. First stop for a keyboard user, and the
+            only way past a nav this size without ~20 tab presses. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:bg-brass focus:px-4 focus:py-2 focus:text-sm focus:text-ground"
+        >
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

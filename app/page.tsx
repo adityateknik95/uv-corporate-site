@@ -1,112 +1,64 @@
-import { ColorTable } from '@/components/specimen/color-table';
-import { TypeScale } from '@/components/specimen/type-scale';
-import { site, whoWeAre } from '@/content';
-
-export const metadata = { title: 'Token specimen' };
+import { SiteHeader } from '@/components/chrome/site-header';
+import { SiteFooter } from '@/components/chrome/site-footer';
+import { Section } from '@/components/layout/section';
+import { content } from '@/content';
 
 /**
- * PHASE 0 ONLY.
+ * PHASE 1 — the shell.
  *
- * This is the foundation rendered as evidence, not the marketing page. It
- * proves the base colour, the type scale and the font pairing are real and
- * measurable before a single section gets built on top of them. Phase 1
- * replaces it with the actual page shell.
+ * Header, footer and the section primitive, with the page's sections present
+ * as empty landmarks so the anchors, the heading order and the vertical rhythm
+ * can be judged before any of them has content. Phase 2 fills the hero and the
+ * timeline; Phases 3 and 4 fill the rest.
  */
-export default function TokenSpecimenPage() {
+
+const PENDING_SECTIONS = [
+  { id: 'who-we-are', number: '06', heading: 'Who we are', phase: 'Phase 2 — the signature timeline' },
+  { id: 'recognition', number: '07', heading: 'Recognition', phase: 'Phase 3' },
+  { id: 'stories', number: '08', heading: 'Customer stories', phase: 'Phase 3' },
+  { id: 'how-we-help', number: '09', heading: 'How we help', phase: 'Phase 3' },
+  { id: 'insights', number: '11', heading: 'Insights', phase: 'Phase 4' },
+  { id: 'expertise', number: '12', heading: 'Expertise', phase: 'Phase 4' },
+  { id: 'partners', number: '13', heading: 'Who we work with', phase: 'Phase 4' },
+  { id: 'careers', number: '14', heading: 'Careers', phase: 'Phase 4' },
+  { id: 'faq', number: '15', heading: 'Questions we get asked', phase: 'Phase 4' },
+  { id: 'contact', number: '16', heading: 'Start a conversation', phase: 'Phase 4' },
+];
+
+export default function HomePage() {
   return (
-    <div className="relative z-10 mx-auto max-w-[var(--container-page)] px-5 sm:px-8 lg:px-12">
-      <header className="border-b border-rule py-16 lg:py-24">
-        <p className="font-mono text-2xs uppercase text-brass">Phase 0 — foundation</p>
-        <h1 className="mt-5 font-display text-3xl text-fg">Token specimen</h1>
-        <p className="mt-6 text-md text-muted measure">
-          The colour, type and motion foundation for {site.companyName}. Nothing on this page is
-          the finished site — it exists so the tokens can be judged on their own before any
-          section is built on them.
-        </p>
-      </header>
+    <>
+      <SiteHeader content={content.site} />
 
-      <Section number="01" title="Colour">
-        <p className="text-base text-muted measure">
-          A warm ink ground rather than the neutral near-black most dark sites land on, and one
-          accent. Brass is the status colour of a live monitored system, which is what telecom and
-          outsourced operations are; it also reads institutional enough to sit under a central
-          government education partnership. Ratios below are measured in the browser from these
-          exact tokens, and the same maths gates the build.
-        </p>
-        <div className="mt-10">
-          <ColorTable />
-        </div>
-      </Section>
+      <main id="main" className="relative z-10">
+        {/* Phase 2 replaces this with the hero. */}
+        <Section bleed className="border-b-0">
+          <div className="py-10 lg:py-16">
+            <p className="font-mono text-2xs uppercase text-brass">Phase 1 — shell</p>
+            <h1 className="mt-5 font-display text-3xl text-fg measure-tight">
+              The shell, before the content.
+            </h1>
+            <p className="mt-6 text-md text-muted measure">
+              Header, mega menu, mobile navigation, footer and the section primitive. Every section
+              below is a real landmark with a real anchor and nothing in it yet — which is the point
+              of building the shell first.
+            </p>
+          </div>
+        </Section>
 
-      <Section number="02" title="Type">
-        <p className="text-base text-muted measure">
-          Two families, deliberately unalike. Instrument Serif appears in exactly two places on the
-          finished page — the hero headline and the timeline years — which makes it an accent
-          typeface rather than a theme. Inter Tight carries everything else. The scale is fluid
-          between 360px and 1440px, and body copy is capped at 68 characters.
-        </p>
-        <div className="mt-10">
-          <TypeScale />
-        </div>
-      </Section>
+        {PENDING_SECTIONS.map((section) => (
+          <Section
+            key={section.id}
+            id={section.id}
+            number={section.number}
+            heading={section.heading}
+          >
+            <p className="font-mono text-2xs uppercase text-muted">{section.phase}</p>
+          </Section>
+        ))}
+      </main>
 
-      <Section number="03" title="The content layer">
-        <p className="text-base text-muted measure">
-          Every section has a typed schema and no component hardcodes copy. The timeline below is
-          real client content, already in <code className="font-mono text-sm text-fg">content/</code>,
-          waiting for Phase 2 to build the section around it.
-        </p>
-
-        <ol className="mt-10 divide-y divide-rule border-y border-rule">
-          {whoWeAre.entries.map((entry) => (
-            <li key={entry.id} className="grid gap-2 py-6 sm:grid-cols-[7rem_1fr] sm:gap-8">
-              <p className="font-display text-xl text-brass tabular-nums">
-                {entry.year ?? entry.marker}
-              </p>
-              <div>
-                <h3 className="text-lg text-fg">{entry.title}</h3>
-                <p className="mt-1 text-base text-muted measure">{entry.body}</p>
-                {entry.year === null ? (
-                  <p className="mt-2 font-mono text-2xs uppercase text-muted">
-                    no date supplied — shown by sequence
-                  </p>
-                ) : null}
-              </div>
-            </li>
-          ))}
-        </ol>
-
-        <p className="mt-8 text-sm text-muted measure">
-          Only 2012 was given. The other five steps are real events with no dates attached, so they
-          carry ordinal markers instead of invented years.
-        </p>
-      </Section>
-
-      <footer className="border-t border-rule py-16 text-sm text-muted">
-        <p className="measure">
-          Foundation only. Phase 1 builds the shell, Phase 2 the hero and the timeline.
-        </p>
-      </footer>
-    </div>
-  );
-}
-
-function Section({
-  number,
-  title,
-  children,
-}: {
-  number: string;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="border-b border-rule py-16 lg:grid lg:grid-cols-[var(--spacing-rail)_1fr] lg:gap-12 lg:py-24">
-      <div className="lg:sticky lg:top-12 lg:self-start">
-        <p className="font-mono text-2xs text-muted">{number}</p>
-        <h2 className="mt-1 text-xl text-fg lg:mt-3">{title}</h2>
-      </div>
-      <div className="mt-8 lg:mt-0">{children}</div>
-    </section>
+      <SiteFooter content={content.site} />
+    </>
   );
 }

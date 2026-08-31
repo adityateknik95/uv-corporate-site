@@ -88,11 +88,12 @@
      tell of a generated dark site.                                          */
   --radius-none: 0px;
   --radius-sm: 2px;
-  --radius-DEFAULT: 4px;
+  --radius-md: 4px;
 
   /* --- layout ------------------------------------------------------------ */
   --spacing-rail: 6.5rem;       /* width of the left rail on desktop     */
   --container-page: 84rem;      /* max page width                        */
+  --spacing-header: 4rem;       /* nav row height once condensed         */
 
   /* --- motion ------------------------------------------------------------
      Nothing above 400ms except the timeline, which owns --ease-spine.       */
@@ -107,8 +108,8 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    /* the jump-to nav in Phase 3 anchors against a sticky header */
-    scroll-padding-top: 6rem;
+    /* anchors clear the sticky header; same token the header is sized from */
+    scroll-padding-top: calc(var(--spacing-header) + 1rem);
     -webkit-text-size-adjust: 100%;
   }
 
@@ -137,21 +138,38 @@
   h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
   p { text-wrap: pretty; }
 
-  /* Visible keyboard focus, brass on dark, offset so it never hugs the glyph.
-     Built in now rather than audited in at Phase 5. */
-  :focus-visible {
-    outline: 2px solid var(--color-brass);
-    outline-offset: 3px;
-    border-radius: var(--radius-sm);
-  }
-  :focus:not(:focus-visible) { outline: none; }
-
   ::selection {
     background-color: var(--color-brass);
     color: var(--color-ground);
   }
 
   [hidden] { display: none !important; }
+}
+
+/* ==========================================================================
+   FOCUS
+   Deliberately UNLAYERED, which puts it above every Tailwind layer including
+   utilities. Two reasons, both learned the hard way:
+
+   1. `transition-colors` includes `outline-color` in its property list, so a
+      focus ring declared in @layer base gets overridden and *fades in* over
+      150ms from currentColor. A focus indicator that animates is a focus
+      indicator that is not there yet when the user needs it, and it renders in
+      the element's text colour rather than the accent for that whole window.
+   2. The ring is an accessibility guarantee. It should not be something a
+      utility class can quietly win against.
+   ========================================================================== */
+
+:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+  /* Instant, never transitioned. */
+  transition-property: none;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 @layer utilities {

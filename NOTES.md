@@ -324,3 +324,95 @@ a single constant. Kyndryl stays where the brief puts it: a structural reference
 
 Not yet provable: the focus ring. The specimen page has no interactive elements. `:focus-visible`
 is defined in the token layer and gets demonstrated in Phase 1 with the nav.
+
+---
+
+## Phase 1 — shell
+
+Utility bar, primary nav with mega menu, mobile navigation, footer, section primitive.
+
+The Phase 0 specimen moved to `/specimen` rather than being deleted. It is the reference when a
+later phase needs to check a token, and the thing to screenshot when someone asks what the design
+system is.
+
+### What each piece is for
+
+- **Utility bar** — secondary wayfinding kept out of the primary nav's way. The quietest type on
+  the page, and the first thing to go when the header condenses: it costs nothing once you are
+  reading.
+- **Primary nav** — the IA made visible. Three dropdowns for the areas that branch, two flat links
+  for the ones that are a single destination.
+- **Mega menu** — built as **disclosures, not an ARIA menubar**. These are links to page regions;
+  `role="menu"` would promise a keyboard model (roving tabindex, type-ahead) that a site
+  navigation should not need and that screen reader users do not expect here. Each trigger is a
+  plain button with `aria-expanded` / `aria-controls`.
+- **Mobile nav** — the same content re-expressed. Three columns cannot survive 360px, but the
+  grouping they encode still matters, so each item becomes an accordion rather than being
+  flattened into one long list.
+- **Section primitive** — the spine stated once, so no section re-derives its own alignment. That
+  is how a long page ends up looking designed rather than assembled.
+
+### Decisions
+
+- **The wordmark is the timeline spine**: one line, three nodes, unevenly spaced. The page's
+  central argument at 16px — a company that arrived at what it is in steps — so the identity and
+  the signature section say the same thing. It also survives the name being unknown, which it
+  currently is.
+- **Header condenses via a 0fr/1fr grid row**, not an animated max-height, so the transition is
+  driven by the content's measured size with no magic number to keep in sync.
+- **The header publishes `--header-height`** from a ResizeObserver. The header is not a fixed size
+  — the utility bar collapses — so anything sitting directly beneath it reads the measured value.
+  The jump-to nav in Phase 3 needs exactly this.
+- **Hover-to-open is gated on `(hover: hover) and (pointer: fine)`**. On touch, `pointerenter`
+  fires on tap and would open a panel the user then has to dismiss before their tap registers.
+
+### Bugs found by testing, and fixed
+
+1. **The focus ring was being overridden by `transition-colors`.** Tailwind v4 includes
+   `outline-color` in that utility's transition-property list, so a ring declared in `@layer base`
+   lost to it: the outline rendered in the element's own text colour and *faded in* over 150ms. A
+   focus indicator that animates is not there when the user needs it. Fixed by moving the rule out
+   of `@layer base` entirely — **unlayered author styles outrank every Tailwind layer** — and
+   setting `transition-property: none` on it. The ring is an accessibility guarantee; it should
+   not be something a utility class can quietly win against. Verified: brass, 2px, instant.
+2. **The collapsed utility bar kept its links in the tab order.** It was `aria-hidden` while
+   scrolled, which hides it from assistive tech but leaves it focusable — so a keyboard user
+   tabbed into invisible controls. Replaced with `inert`, which removes it from both the
+   accessibility tree and the focus order. Verified: 13 reachable controls in the header expanded,
+   9 when condensed.
+3. **The mobile panel was offset by a hardcoded `4rem`** while the header is 102px with the
+   utility bar expanded — so the panel covered its own close button. Fixed by consuming the
+   measured `--header-height`.
+4. **Nav column headings were `h3`s sitting before the `h1`.** The nav precedes `<main>` in the
+   DOM, so those headings broke the document outline. They are labels for adjacent lists, not
+   document headings, so they became `<p id>` + `<ul aria-labelledby>`: the grouping is still
+   announced, the outline is clean.
+5. **Occluding panels no longer animate opacity.** Fading in a surface whose job is to cover the
+   page lets content show through it mid-transition, which on a dark ground reads as a rendering
+   fault. Both the mega menu and the mobile panel now animate transform only. A dropped or
+   throttled frame leaves an opaque panel a few pixels out of place instead of a translucent one.
+
+### Verified
+
+- Mega menu, 13 checks: opens on click; `aria-expanded` / `aria-controls` / `aria-labelledby`
+  wired; only one panel open at a time; Escape closes **and returns focus to its trigger**;
+  outside pointerdown closes; focus leaving the header closes; second click closes; flat links
+  stay links; no `role="menu"` misuse; nav has an accessible name.
+- Mobile nav, 8 checks: `role="dialog"` + `aria-modal`; focus moves into the panel and is trapped;
+  body scroll locked and restored; accordions expand one at a time with linked regions; Escape
+  closes.
+- Header: condenses on scroll and is reversible; utility controls leave the tab order when
+  collapsed.
+- Document: one `h1`, no skipped heading levels, header/main/footer landmarks, every in-page
+  anchor resolves to a real element, no horizontal overflow at 360px.
+- Skip link is the first focusable element and is hidden until focused.
+
+### Note on the verification environment
+
+The browser pane used for testing does not run `requestAnimationFrame` and its
+`document.timeline` does not advance, so CSS transitions and WAAPI animations freeze mid-flight
+and `AnimatePresence` exit animations never unmount their element. Several apparent failures were
+this, not the code: assertions were rewritten to check state (`aria-expanded`) rather than DOM
+presence. Motion end-states could not be visually confirmed here and should be checked in a real
+browser before shipping. This is also part of why occluding panels no longer animate opacity —
+the components now degrade correctly when frames are dropped.
