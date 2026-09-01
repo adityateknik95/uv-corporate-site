@@ -20,8 +20,8 @@ export function InsightsGrid({ content }: { content: InsightsContent }) {
         {content.cards.map((card) => (
           <a key={card.id} href={card.href} className="group block">
             <MediaSlot media={card.media} ratio="4/3" />
-            <p className="mt-5 text-label uppercase text-brass">{card.category}</p>
-            <p className="mt-2 text-lead text-fg measure-tight transition-colors duration-200 ease-in-out group-hover:text-brass">
+            <p className="mt-5 text-label uppercase text-accent">{card.category}</p>
+            <p className="mt-2 text-lead text-fg measure-tight transition-colors duration-200 ease-in-out group-hover:text-accent">
               {card.title}
             </p>
           </a>

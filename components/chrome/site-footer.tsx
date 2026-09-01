@@ -29,7 +29,7 @@ export function SiteFooter({ content }: { content: SiteContent }) {
                   <li key={link.href + link.label}>
                     <a
                       href={link.href}
-                      className="text-small text-fg underline decoration-transparent decoration-1 underline-offset-4 transition-colors hover:decoration-brass"
+                      className="text-small text-fg underline decoration-transparent decoration-1 underline-offset-4 transition-colors hover:decoration-accent"
                     >
                       {link.label}
                     </a>

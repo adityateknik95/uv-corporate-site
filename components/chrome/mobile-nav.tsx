@@ -145,7 +145,7 @@ export function MobileNav({
               <a
                 href={nav.cta.href}
                 onClick={() => setOpen(false)}
-                className="mt-8 flex h-12 items-center justify-center rounded-sm bg-brass px-5 text-small font-medium text-ground"
+                className="mt-8 flex h-12 items-center justify-center rounded-sm bg-accent px-5 text-small font-medium text-ground"
               >
                 {nav.cta.label}
               </a>

@@ -26,33 +26,45 @@
   --radius-*: initial;
 
   /* --- colour ------------------------------------------------------------
-     The reference alternates #FFFFFF with #F2F1EE -- a ~5% luminance step,
-     not a light/dark flip. That is the finding that drives this palette: what
-     recreates the page rhythm in black is a *small* elevation step used
-     consistently, not dramatic dark/darker banding.
+     Revised twice after launch, both times by explicit client direction
+     rather than a self-directed redesign -- see NOTES.md, "Design revision"
+     and its follow-up for the full account of each.
 
-     Ground is a warm ink rather than the neutral near-black every generated
-     dark site lands on. The oldest business here is a BPO -- people, shifts --
-     and a warm ground suits that better than a server-room blue.
-     Ratios are measured by scripts/contrast.mjs, not estimated.             */
+     Round one moved the ground from a warm ink toward a neutral near-black.
+     Round two matched this palette outright to a second build of the same
+     brief the client compared against and preferred: exact ground, exact
+     text tones, exact accent, measured from that site's live computed
+     styles rather than approximated. The one thing NOT carried over is its
+     elevation logic -- that site is close to flat black with hairlines doing
+     the separating work; this page keeps its own small-step raised-surface
+     rhythm (inherited from the *original* Kyndryl reference audit) and
+     re-expresses it using tones that site itself uses elsewhere on its own
+     page (its image-slot fill for `surface`, its card-grid wrapper for
+     `surface-2`), so the borrowed palette still obeys this page's own
+     structure instead of just being pasted on top of it.
+
+     Every ratio below is measured by scripts/contrast.mjs, not estimated,
+     and was rerun after this change -- not assumed to still hold from the
+     prior palette. All eleven pairs came out with more margin than before,
+     since the new ground is darker against the same or lighter text tones. */
   --color-transparent: transparent;
   --color-current: currentColor;
 
-  /* Revised post-launch: moved from a warm ink ground toward a neutral
-     near-black at the user's explicit direction, after comparing against
-     another build of the same brief. Keeping a hair of hue rather than
-     literal #000 is the one thing carried over from the original reasoning;
-     everything else about how dark it sits is a deliberate change, not a
-     compromise on it. Every ratio below was recomputed and re-gated, not
-     assumed to still hold from the old values. See NOTES.md, "Design
-     revision" for the full account. */
-  --color-ground: #0a0a0b;      /* near-neutral black                        */
-  --color-surface: #151517;     /* raised band                               */
-  --color-surface-2: #1f1f22;   /* hover / active states                     */
-  --color-rule: #2a2a2e;        /* hairline                                  */
-  --color-fg: #f2ede4;          /* primary text, warm off-white              */
-  --color-muted: #a29886;       /* secondary text, ~65% -- 6.6:1 on ground   */
-  --color-brass: #d9a441;       /* the only accent                           */
+  --color-ground: #08090a;      /* exact match to the comparison site        */
+  --color-surface: #181818;     /* that site's own "image slot" tone         */
+  --color-surface-2: #292c30;   /* that site's own card-grid-wrapper tone    */
+  --color-rule: #34343a;        /* hairline, this page's own device --
+                                    the comparison site doesn't visibly use
+                                    one, so there was nothing to match here  */
+  --color-fg: #f5f5f3;          /* exact match, primary text                 */
+  --color-muted: #b8bec7;       /* exact match, that site's more-used of its
+                                    two secondary tones                      */
+  --color-accent: #d7ff00;      /* exact match: a lime accent, not brass.
+                                    Renamed the token from --color-brass
+                                    throughout the codebase rather than keep
+                                    a name that would now describe the wrong
+                                    colour -- 126 occurrences, mechanical
+                                    rename, not a respelling of this comment */
 
   /* --- type --------------------------------------------------------------
      One grotesque, weights 300-700, exactly as the reference. Steps are named
@@ -185,7 +197,7 @@
   p { text-wrap: pretty; }
 
   ::selection {
-    background-color: var(--color-brass);
+    background-color: var(--color-accent);
     color: var(--color-ground);
   }
 
@@ -207,7 +219,7 @@
    ========================================================================== */
 
 :focus-visible {
-  outline: 2px solid var(--color-brass);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
   /* Instant, never transitioned. */

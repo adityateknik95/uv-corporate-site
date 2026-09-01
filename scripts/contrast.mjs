@@ -35,10 +35,10 @@ const checks = [
   ['muted', 'ground', AA_NORMAL, 'secondary text on page'],
   ['muted', 'surface', AA_NORMAL, 'secondary text on raised surface'],
   ['muted', 'surface-2', AA_NORMAL, 'secondary text on hover surface'],
-  ['brass', 'ground', AA_NORMAL, 'accent text and focus ring on page'],
-  ['brass', 'surface', AA_NORMAL, 'accent text on raised surface'],
-  ['brass', 'surface-2', AA_NORMAL, 'accent text on hover surface'],
-  ['ground', 'brass', AA_NORMAL, 'dark label on a brass button'],
+  ['accent', 'ground', AA_NORMAL, 'accent text and focus ring on page'],
+  ['accent', 'surface', AA_NORMAL, 'accent text on raised surface'],
+  ['accent', 'surface-2', AA_NORMAL, 'accent text on hover surface'],
+  ['ground', 'accent', AA_NORMAL, 'dark label on an accent button'],
   ['rule', 'ground', 1.2, 'hairline perceptible against page'],
 ];
 

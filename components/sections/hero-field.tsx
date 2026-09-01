@@ -40,7 +40,7 @@ const FIELD: Record<Sector, string> = {
 
 /** A faint lattice, sized so it reads as texture rather than as a grid. */
 const LATTICE =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M72 0H0v72' fill='none' stroke='%23d9a441' stroke-width='0.5' stroke-opacity='0.16'/%3E%3C/svg%3E\")";
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M72 0H0v72' fill='none' stroke='%23d7ff00' stroke-width='0.5' stroke-opacity='0.16'/%3E%3C/svg%3E\")";
 
 export function HeroField({ sector, media }: { sector: Sector; media?: Media }) {
   const hasPhoto = Boolean(media?.src);

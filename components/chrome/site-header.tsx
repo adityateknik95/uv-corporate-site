@@ -63,7 +63,7 @@ export function SiteHeader({ content }: { content: SiteContent }) {
               dark text. The only pill on the page -- everything else is 4px. */}
           <a
             href={content.nav.cta.href}
-            className="hidden h-11 items-center rounded-pill bg-brass px-5 text-small font-medium text-ground transition-colors duration-200 ease-in-out hover:bg-fg sm:inline-flex"
+            className="hidden h-11 items-center rounded-pill bg-accent px-5 text-small font-medium text-ground transition-colors duration-200 ease-in-out hover:bg-fg sm:inline-flex"
           >
             {content.nav.cta.label}
           </a>

@@ -20,7 +20,7 @@ export function CareersBand({ content }: { content: CareersContent }) {
             <p className="mt-3 text-body text-muted measure">{card.body}</p>
             <a
               href={card.link.href}
-              className="mt-6 inline-flex items-center gap-1.5 text-small text-brass underline decoration-brass/40 underline-offset-4 transition-colors duration-200 ease-in-out hover:decoration-brass"
+              className="mt-6 inline-flex items-center gap-1.5 text-small text-accent underline decoration-accent/40 underline-offset-4 transition-colors duration-200 ease-in-out hover:decoration-accent"
             >
               {card.link.label}
             </a>

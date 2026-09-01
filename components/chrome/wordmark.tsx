@@ -18,10 +18,10 @@ function SpineMark() {
       className="shrink-0 overflow-visible"
     >
       <line x1="3" y1="2" x2="3" y2="22" stroke="var(--color-rule)" strokeWidth="1" />
-      <circle cx="3" cy="4" r="2" fill="var(--color-brass)" />
+      <circle cx="3" cy="4" r="2" fill="var(--color-accent)" />
       <circle cx="3" cy="12" r="2" fill="var(--color-muted)" />
       <circle cx="3" cy="20" r="2" fill="var(--color-muted)" />
-      <line x1="7" y1="4" x2="14" y2="4" stroke="var(--color-brass)" strokeWidth="1" />
+      <line x1="7" y1="4" x2="14" y2="4" stroke="var(--color-accent)" strokeWidth="1" />
     </svg>
   );
 }

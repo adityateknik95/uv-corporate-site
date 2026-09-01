@@ -12,7 +12,7 @@ const SWATCHES: readonly { token: string; kind: Kind; role: string }[] = [
   { token: 'rule', kind: 'line', role: 'Hairlines. Separation is done with lines, never shadow.' },
   { token: 'fg', kind: 'text', role: 'Primary text. Warm off-white, never pure white.' },
   { token: 'muted', kind: 'text', role: 'Secondary text.' },
-  { token: 'brass', kind: 'text', role: 'The only accent. Also the focus ring.' },
+  { token: 'accent', kind: 'text', role: 'The only accent. Also the focus ring.' },
 ];
 
 const BACKGROUNDS = ['ground', 'surface', 'surface-2'] as const;
@@ -87,7 +87,7 @@ function RatioRow({ token, values }: { token: string; values: Record<string, str
         return (
           <li key={bg} className="font-mono text-utility">
             <span className="text-muted">on {bg} </span>
-            <span className={passesBody ? 'text-brass' : 'text-fg'}>{ratio.toFixed(2)}:1</span>
+            <span className={passesBody ? 'text-accent' : 'text-fg'}>{ratio.toFixed(2)}:1</span>
             <span className="text-muted">
               {' '}
               {passesBody ? 'AA' : passesLarge ? 'AA large only' : 'fails'}

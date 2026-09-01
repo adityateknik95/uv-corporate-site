@@ -17,7 +17,7 @@ export default function TokenSpecimenPage() {
   return (
     <Container className="relative z-10 pt-[var(--spacing-header)]">
       <header className="border-b border-rule py-16 lg:py-24">
-        <p className="font-mono text-label uppercase text-brass">Phase 0 — foundation</p>
+        <p className="font-mono text-label uppercase text-accent">Phase 0 — foundation</p>
         <h1 className="mt-5 text-h1 text-fg">Token specimen</h1>
         <p className="mt-6 text-lead text-muted measure">
           The colour, type and motion foundation for {site.companyName}. Nothing on this page is
@@ -61,7 +61,7 @@ export default function TokenSpecimenPage() {
         <ol className="mt-10 divide-y divide-rule border-y border-rule">
           {whoWeAre.entries.map((entry) => (
             <li key={entry.id} className="grid gap-2 py-6 sm:grid-cols-[7rem_1fr] sm:gap-8">
-              <p className=" text-h3 text-brass tabular-nums">
+              <p className=" text-h3 text-accent tabular-nums">
                 {entry.year ?? entry.marker}
               </p>
               <div>

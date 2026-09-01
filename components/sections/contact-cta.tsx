@@ -25,7 +25,7 @@ export function ContactCta({ content }: { content: ContactCtaContent }) {
         <p className="mt-4 text-lead text-muted measure">{content.body}</p>
         <a
           href={content.primary.href}
-          className="mt-8 inline-flex h-[50px] items-center rounded-md bg-brass px-6 text-body font-medium text-ground transition-colors duration-200 ease-in-out hover:bg-fg"
+          className="mt-8 inline-flex h-[50px] items-center rounded-md bg-accent px-6 text-body font-medium text-ground transition-colors duration-200 ease-in-out hover:bg-fg"
         >
           {content.primary.label}
         </a>
@@ -54,13 +54,13 @@ export function ContactCta({ content }: { content: ContactCtaContent }) {
           />
           <button
             type="submit"
-            className="inline-flex h-12 shrink-0 items-center justify-center rounded-md border border-rule px-5 text-small text-fg transition-colors duration-200 ease-in-out hover:border-brass hover:text-brass"
+            className="inline-flex h-12 shrink-0 items-center justify-center rounded-md border border-rule px-5 text-small text-fg transition-colors duration-200 ease-in-out hover:border-accent hover:text-accent"
           >
             {content.subscribe.submitLabel}
           </button>
         </form>
 
-        <p id={statusId} role="status" className="mt-3 text-small text-brass">
+        <p id={statusId} role="status" className="mt-3 text-small text-accent">
           {submitted ? 'Thanks — this is a placeholder form with nowhere to send that yet.' : ''}
         </p>
       </div>

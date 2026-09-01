@@ -45,10 +45,10 @@ change when it arrives.
 
 ## The design, in plain terms
 
-- **Colour:** a near-neutral black (`#0A0A0B`), revised after an early version used a warmer,
-  ink-toned base — client preference, after comparing against an alternative build side by side.
-  One accent colour throughout, a brass/amber, chosen because it's the colour of a status light on
-  a monitored system — which is literally what telecom and outsourced operations are.
+- **Colour:** matched exactly to an alternative build of the same brief the client compared this
+  against and preferred — ground, text tones, and accent are the other site's own measured colour
+  values, not an approximation. One accent colour throughout, a lime, used sparingly against the
+  near-black ground rather than scattered across every label.
 - **Type:** one typeface (Inter Tight), several weights and sizes, with bold, assertive headline
   weights rather than a light touch — also a direct-comparison call.
 - **The big lowercase words** ("who we are", "stories", "how we help") that appear between

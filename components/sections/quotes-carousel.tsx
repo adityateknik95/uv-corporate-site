@@ -47,7 +47,7 @@ export function QuotesCarousel({ content }: { content: ExpertiseQuotesContent })
                 <a
                   href={quote.social.href}
                   {...(quote.social.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
-                  className="ml-2 shrink-0 text-small text-brass underline decoration-brass/40 underline-offset-4 transition-colors duration-200 ease-in-out hover:decoration-brass"
+                  className="ml-2 shrink-0 text-small text-accent underline decoration-accent/40 underline-offset-4 transition-colors duration-200 ease-in-out hover:decoration-accent"
                 >
                   {quote.social.label}
                   {quote.social.external ? <span className="sr-only"> (opens in a new tab)</span> : null}
@@ -72,7 +72,7 @@ export function QuotesCarousel({ content }: { content: ExpertiseQuotesContent })
               <span
                 aria-hidden
                 className={`block h-px transition-all duration-300 ease-in-out ${
-                  i === index ? 'w-10 bg-brass' : 'w-5 bg-rule group-hover:bg-muted'
+                  i === index ? 'w-10 bg-accent' : 'w-5 bg-rule group-hover:bg-muted'
                 }`}
               />
             </button>

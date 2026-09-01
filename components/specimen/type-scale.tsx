@@ -25,7 +25,7 @@ export function TypeScale() {
       {STEPS.map((step) => (
         <div key={step.token} className="grid gap-3 py-7 lg:grid-cols-[10rem_1fr] lg:gap-8">
           <div className="lg:pt-2">
-            <p className="font-mono text-utility text-brass">text-{step.token}</p>
+            <p className="font-mono text-utility text-accent">text-{step.token}</p>
             <p className="mt-2 text-utility text-muted measure-tight">{step.note}</p>
           </div>
 

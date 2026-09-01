@@ -12,7 +12,7 @@ import { useActiveSection } from '@/lib/hooks';
  * brief's explicit spec rather than to something observed on the reference.
  *
  * Sticky directly under the header, consuming the same `--header-height`
- * the header publishes for exactly this purpose. A brass underline marks the
+ * the header publishes for exactly this purpose. An accent underline marks the
  * active link rather than a filled pill, matching the rest of the page's
  * rule-not-pill vocabulary (see the hero's pagination).
  */
@@ -43,7 +43,7 @@ export function JumpNav({ content }: { content: JumpNavContent }) {
                   <span
                     aria-hidden
                     className={`absolute inset-x-0 -bottom-[13px] h-px transition-colors duration-200 ease-in-out ${
-                      isActive ? 'bg-brass' : 'bg-transparent'
+                      isActive ? 'bg-accent' : 'bg-transparent'
                     }`}
                   />
                 </a>

@@ -27,6 +27,17 @@ import type { WhoWeAreContent } from '@/content';
  *    earns spending the page's one bold moment on it.
  *
  * This is the only thing allowed over 400ms.
+ *
+ * Each entry also carries a quiet **hover** treatment, added after review --
+ * the reveal alone made this read as a static list once it had finished
+ * playing, once. Hover fills the node solid, grows a thin accent rail
+ * beside the text, and nudges the row a few pixels right -- ordinary
+ * `:hover` CSS, not JS state, so it costs nothing and is automatically
+ * caught by the same global `transition-duration: 0.01ms` reduced-motion
+ * override documented in globals.css, with no extra branch needed here.
+ * Hover-only, deliberately not made keyboard-focusable: these rows perform
+ * no action, and giving a non-interactive element a focus stop it does
+ * nothing with is the more common accessibility mistake, not the safer one.
  */
 export function Timeline({ content }: { content: WhoWeAreContent }) {
   const reduced = useReducedMotion();
@@ -117,43 +128,73 @@ export function Timeline({ content }: { content: WhoWeAreContent }) {
           // Each era waits for the spine to reach it.
           const step = 90;
           const base = 180 + i * step;
+          // Once the reveal has actually finished, stop overriding transform
+          // /opacity/clip-path inline -- an inline style always beats a CSS
+          // hover utility at equal specificity, so the hover treatment below
+          // could never win against a permanently-set inline transform. Mid-
+          // reveal (or with no animation at all) these settle to the same
+          // visual result the inline styles produce anyway.
+          const revealing = animate && !revealed;
 
           return (
-            <li key={entry.id} className="relative pb-12 pl-10 last:pb-0 lg:pb-16 lg:pl-16">
+            <li
+              key={entry.id}
+              className="group relative pb-12 pl-10 transition-transform duration-200 ease-in-out last:pb-0 hover:translate-x-1.5 lg:pb-16 lg:pl-16"
+            >
+              {/* The accent rail: 0-height at rest, grows down the full row
+                  on hover. A second, row-scoped echo of the main spine,
+                  rather than touching the spine element itself. */}
               <span
                 aria-hidden
-                className="absolute left-0 top-1.5 block size-[11px] rounded-full border border-rule bg-ground"
-                style={{
-                  transform: `scale(${hidden ? 0.3 : 1})`,
-                  opacity: hidden ? 0 : 1,
-                  transition: animate
-                    ? `transform 320ms var(--ease-spine) ${base}ms, opacity 320ms linear ${base}ms`
-                    : undefined,
-                }}
+                className="absolute left-[4.5px] top-6 h-0 w-px bg-accent transition-[height] duration-300 ease-in-out group-hover:h-[calc(100%-2rem)]"
+              />
+
+              <span
+                aria-hidden
+                className={
+                  revealing
+                    ? 'absolute left-0 top-1.5 block size-[11px] rounded-full border border-rule bg-ground'
+                    : 'absolute left-0 top-1.5 block size-[11px] rounded-full border border-rule bg-ground transition-[transform,background-color,border-color] duration-200 ease-in-out group-hover:scale-125 group-hover:border-accent group-hover:bg-accent'
+                }
+                style={
+                  revealing
+                    ? {
+                        transform: `scale(${hidden ? 0.3 : 1})`,
+                        opacity: hidden ? 0 : 1,
+                        transition: `transform 320ms var(--ease-spine) ${base}ms, opacity 320ms linear ${base}ms`,
+                      }
+                    : undefined
+                }
               />
 
               <div
-                style={{
-                  // The unmask: a horizontal wipe out from the spine, not a
-                  // fade-and-slide-up. It shows where the content came from.
-                  clipPath: hidden ? 'inset(0 100% 0 0)' : 'inset(0 0 0 0)',
-                  transition: animate
-                    ? `clip-path 620ms var(--ease-spine) ${base + 60}ms`
-                    : undefined,
-                }}
+                style={
+                  revealing
+                    ? {
+                        // The unmask: a horizontal wipe out from the spine,
+                        // not a fade-and-slide-up -- shows where the content
+                        // came from.
+                        clipPath: hidden ? 'inset(0 100% 0 0)' : 'inset(0 0 0 0)',
+                        transition: `clip-path 620ms var(--ease-spine) ${base + 60}ms`,
+                      }
+                    : undefined
+                }
               >
                 <p
-                  className="text-h3 text-brass tabular-nums"
-                  style={{
-                    opacity: hidden ? 0 : 1,
-                    transition: animate ? `opacity 400ms linear ${base + 320}ms` : undefined,
-                  }}
+                  className="text-h3 text-accent tabular-nums"
+                  style={
+                    revealing
+                      ? { opacity: hidden ? 0 : 1, transition: `opacity 400ms linear ${base + 320}ms` }
+                      : undefined
+                  }
                 >
                   {entry.year ?? entry.marker}
                 </p>
 
                 <h3 className="mt-3 text-h4 text-fg">{entry.title}</h3>
-                <p className="mt-3 text-body text-muted measure">{entry.body}</p>
+                <p className="mt-3 text-body text-muted transition-colors duration-200 ease-in-out measure group-hover:text-fg">
+                  {entry.body}
+                </p>
 
                 {entry.year === null ? (
                   <p className="mt-3 text-label uppercase text-muted">

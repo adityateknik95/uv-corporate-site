@@ -38,7 +38,7 @@ export function RecognitionCarousel({ content }: { content: RecognitionContent }
             aria-hidden={i !== index}
             inert={i !== index}
           >
-            <p className="text-h1 text-brass tabular-nums">{item.index}</p>
+            <p className="text-h1 text-accent tabular-nums">{item.index}</p>
             <p className="mt-4 text-h4 text-fg measure">{item.statement}</p>
             <p className="mt-4 text-small text-muted">{item.source}</p>
           </div>
@@ -50,7 +50,7 @@ export function RecognitionCarousel({ content }: { content: RecognitionContent }
           <button
             type="button"
             onClick={() => go(index - 1)}
-            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-brass hover:text-brass"
+            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-accent hover:text-accent"
           >
             <span className="sr-only">Previous</span>
             <ArrowGlyph direction="left" />
@@ -58,7 +58,7 @@ export function RecognitionCarousel({ content }: { content: RecognitionContent }
           <button
             type="button"
             onClick={() => go(index + 1)}
-            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-brass hover:text-brass"
+            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-accent hover:text-accent"
           >
             <span className="sr-only">Next</span>
             <ArrowGlyph direction="right" />
@@ -78,7 +78,7 @@ export function RecognitionCarousel({ content }: { content: RecognitionContent }
                 // get WCAG 2.5.8's inline-text exemption from the 24x24
                 // minimum target size.
                 className={`inline-flex size-9 items-center justify-center text-small tabular-nums transition-colors duration-200 ease-in-out ${
-                  i === index ? 'text-brass' : 'text-muted hover:text-fg'
+                  i === index ? 'text-accent' : 'text-muted hover:text-fg'
                 }`}
               >
                 {item.index}

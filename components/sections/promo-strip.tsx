@@ -15,7 +15,7 @@ export function PromoStrip({ content }: { content: PromoStripContent }) {
           href={card.link.href}
           className="group block px-1 py-8 transition-colors duration-200 ease-in-out sm:px-8 sm:first:pl-0 sm:last:pr-0"
         >
-          <p className="text-label uppercase text-brass">{card.category}</p>
+          <p className="text-label uppercase text-accent">{card.category}</p>
           <p className="mt-3 text-lead text-fg measure-tight">{card.heading}</p>
           <p className="mt-4 inline-flex items-center gap-1.5 text-small text-muted transition-colors duration-200 ease-in-out group-hover:text-fg">
             {card.link.label}

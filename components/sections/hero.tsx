@@ -101,14 +101,14 @@ export function Hero({ content }: { content: HeroContent }) {
               <HeroField sector={slide.sector} media={slide.media} />
 
               <Container className="relative z-10 flex flex-col justify-end pb-14 pt-16 lg:pb-20 lg:pt-24">
-                <p className="mb-2 text-label uppercase text-brass">{slide.kicker}</p>
+                <p className="mb-2 text-label uppercase text-accent">{slide.kicker}</p>
                 <h1 className="text-h1 text-fg measure-tight">{slide.headline}</h1>
                 <p className="mt-5 text-lead text-muted measure">{slide.subline}</p>
 
                 <div className="mt-9">
                   <a
                     href={slide.cta.href}
-                    className="inline-flex h-[50px] items-center rounded-md border border-fg/70 px-5 text-body text-fg transition-colors duration-200 ease-in-out hover:border-brass hover:text-brass"
+                    className="inline-flex h-[50px] items-center rounded-md border border-fg/70 px-5 text-body text-fg transition-colors duration-200 ease-in-out hover:border-accent hover:text-accent"
                   >
                     {slide.cta.label}
                   </a>
@@ -126,7 +126,7 @@ export function Hero({ content }: { content: HeroContent }) {
           <button
             type="button"
             onClick={() => setStopped((value) => !value)}
-            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-brass hover:text-brass"
+            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-accent hover:text-accent"
           >
             <span className="sr-only">
               {rotating ? content.pauseLabel : content.playLabel}
@@ -149,7 +149,7 @@ export function Hero({ content }: { content: HeroContent }) {
                   <span
                     aria-hidden
                     className={`block h-px transition-all duration-300 ease-in-out ${
-                      i === index ? 'w-10 bg-brass' : 'w-5 bg-rule group-hover:bg-muted'
+                      i === index ? 'w-10 bg-accent' : 'w-5 bg-rule group-hover:bg-muted'
                     }`}
                   />
                 </button>

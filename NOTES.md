@@ -1069,3 +1069,94 @@ both went unpicked).
 builds, zero horizontal overflow at 360px, zero broken image references anywhere in the new
 `MediaSlot` usage (confirmed against the exact failure mode found on the comparison site), h1/h2
 computed weight 700 live in the browser, ground computed as `rgb(10, 10, 11)` live in the browser.
+
+---
+
+## Follow-up: exact palette match, and hover on the timeline
+
+Two more requests after the redesign above, both acted on directly.
+
+### Palette matched exactly, not approximated
+
+The earlier revision moved toward "closer to pure black" as an interpreted direction. This one is
+a literal match: every core token now equals the comparison site's own measured computed style,
+not a value inspired by it.
+
+| Token | Old (revision 1) | New (exact match) | Source |
+|---|---|---|---|
+| `ground` | `#0A0A0B` | `#08090A` | that site's `body` background |
+| `surface` | `#151517` | `#181818` | that site's own image-slot fill |
+| `surface-2` | `#1F1F22` | `#292C30` | that site's own card-grid-wrapper background |
+| `fg` | `#F2EDE4` | `#F5F5F3` | that site's primary text colour |
+| `muted` | `#A29886` | `#B8BEC7` | the more-used of that site's two secondary text tones |
+| accent | `#D9A441` (brass) | `#D7FF00` (lime) | that site's accent, used 38 times on its page |
+| `rule` | `#2A2A2E` | `#34343A` | not borrowed -- see below |
+
+**`rule` has no equivalent to match.** That site doesn't really use a visible hairline system; its
+`customer-stories-grid` wrapper sets `border: 0.8px solid rgb(41, 44, 48)` -- the same colour as
+its own background, which is a border that separates nothing visually. This page's whole layout
+vocabulary depends on hairlines doing real separation work (promo strip, footer, mega menu, careers
+band), so `rule` was derived to fit *this* page's structure rather than left unset or copied from
+a colour that wouldn't do the job here.
+
+**The accent token was renamed, not just recoloured.** `--color-brass` became `--color-accent`
+across all 22 source files (126 occurrences) -- keeping a name that says "brass" while the value
+is lime would be exactly the kind of self-contradicting token the project's own token-layer
+principle exists to prevent. Caught and fixed a batch of "a brass" -> "a accent" grammar breaks
+the blind rename produced, and separately found the rename had missed `scripts/contrast.mjs` on
+the first pass (a `.mjs` file, outside the `.tsx`/`.css` glob used for the main rename) -- caught
+because the contrast gate itself failed with `MISSING token: --color-brass` immediately after,
+which is exactly the kind of thing that gate is for.
+
+Also updated: `app/icon.svg` (the favicon hardcodes hex, since a favicon has no page context to
+resolve CSS custom properties from), `app/layout.tsx`'s `themeColor` meta, and the hex colour
+baked into `hero-field.tsx`'s lattice pattern data-URI -- three more places colour was hardcoded
+outside the token layer for unavoidable technical reasons, all caught by grepping for the old hex
+values rather than assuming the token-layer edit alone was sufficient.
+
+All eleven `scripts/contrast.mjs` pairs re-passed with *more* margin than the previous palette --
+this site's ground is darker than either of this project's own prior versions, and the borrowed
+text tones are lighter, so contrast improved as a side effect of the match, not something that had
+to be separately defended.
+
+### Timeline hover micro-interactions
+
+The brief: "the who we are section looks like a plain flow" once its one-time scroll reveal has
+already played -- there was nothing left for a visitor to notice was interactive, because nothing
+was. Added a quiet hover treatment per entry:
+
+- The node fills solid with the accent colour and scales up 25%.
+- A thin accent rail grows down the full height of the row from the node, on hover only --
+  a second, row-scoped echo of the main spine, without touching the spine element itself.
+- The row nudges 6px right.
+- The body copy brightens from `muted` to `fg`.
+
+**Could not verify against the actual comparison site's own hover behaviour.** Its dev server had
+stopped responding by the time this was requested (empty document, no title, no body -- a
+connection failure, not a slow load). Rather than guess at what it does and claim a match, this is
+built as an original, considered hover treatment using this page's own existing interaction
+vocabulary (rules that grow rather than pills that fill, quiet 200-300ms transitions), and is
+described to the user as such rather than as a verified copy. Worth re-checking against the actual
+site if it comes back up.
+
+**One structural fix the hover treatment needed first.** The reveal animation's inline styles
+(`transform`, `opacity`, `clip-path`) were previously set unconditionally on every render. An
+inline style always wins over a CSS class at equal specificity regardless of `:hover` state, so a
+permanently-set `transform: scale(1)` would have silently defeated any `group-hover:scale-125`
+utility forever, no matter how the hover CSS was written. Fixed by only applying those inline
+overrides during the actual pre-reveal/revealing window (`animate && !revealed`); once settled (or
+under reduced motion, or with no JS at all), the inline styles are omitted entirely and the
+element falls back to its default CSS values -- `clip-path: none`, `opacity: 1`, `transform: none`
+-- which are visually identical to the old explicitly-set "resolved" values, verified live rather
+than assumed. Ordinary CSS hover utilities then apply cleanly once that inline override is gone.
+
+Hover-only, deliberately not made keyboard-focusable: the rows perform no action on activation, and
+giving a non-interactive element a focus stop that does nothing is the more common accessibility
+mistake here, not the safer choice.
+
+Verified: real OS-level hover (not synthetic `dispatchEvent`, which -- consistent with every other
+finding of this shape across this project -- does not reliably trigger genuine `:hover` matching)
+produced the exact designed result in a live screenshot: solid-filled lime node, grown accent rail.
+The resolved (non-hovering, non-revealing) state was independently confirmed via computed style:
+`clip-path: none`, `opacity: 1`, `transform: none` on every entry -- the reveal moment is intact.
+`npm run contrast` 11/11, typecheck clean, static export builds.

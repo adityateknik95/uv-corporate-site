@@ -109,13 +109,13 @@ export function PrimaryNav({ content }: { content: NavContent }) {
                 >
                   {item.label}
                   <Chevron open={isOpen} />
-                  {/* The open item is marked by a brass rule sitting on the
+                  {/* The open item is marked by an accent rule sitting on the
                       header's own bottom border, so the trigger and its panel
                       read as one object. */}
                   <span
                     aria-hidden
                     className={`absolute inset-x-2 bottom-0 h-px transition-colors ${
-                      isOpen ? 'bg-brass' : 'bg-transparent'
+                      isOpen ? 'bg-accent' : 'bg-transparent'
                     }`}
                   />
                 </button>

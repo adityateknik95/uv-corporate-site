@@ -53,7 +53,7 @@ export function StoriesCarousel({ content }: { content: CustomerStoriesContent }
             >
               <MediaSlot media={story.media} ratio="16/9" className="max-w-2xl" />
 
-              <p className="mt-8 text-label uppercase text-brass">{story.client}</p>
+              <p className="mt-8 text-label uppercase text-accent">{story.client}</p>
               <p className="mt-4 text-h3 text-fg measure">{story.summary}</p>
 
               <div
@@ -75,7 +75,7 @@ export function StoriesCarousel({ content }: { content: CustomerStoriesContent }
                 onClick={() => toggle(story.id)}
                 aria-expanded={isOpen}
                 aria-controls={`story-full-${story.id}`}
-                className="mt-6 inline-flex items-center gap-1.5 text-small text-brass underline decoration-brass/40 underline-offset-4 transition-colors duration-200 ease-in-out hover:decoration-brass"
+                className="mt-6 inline-flex items-center gap-1.5 text-small text-accent underline decoration-accent/40 underline-offset-4 transition-colors duration-200 ease-in-out hover:decoration-accent"
               >
                 {isOpen ? content.collapseLabel : content.expandLabel}
               </button>
@@ -89,7 +89,7 @@ export function StoriesCarousel({ content }: { content: CustomerStoriesContent }
           <button
             type="button"
             onClick={() => go(index - 1)}
-            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-brass hover:text-brass"
+            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-accent hover:text-accent"
           >
             <span className="sr-only">Previous story</span>
             <ArrowGlyph direction="left" />
@@ -97,7 +97,7 @@ export function StoriesCarousel({ content }: { content: CustomerStoriesContent }
           <button
             type="button"
             onClick={() => go(index + 1)}
-            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-brass hover:text-brass"
+            className="inline-flex size-9 items-center justify-center rounded-md border border-rule text-muted transition-colors duration-200 ease-in-out hover:border-accent hover:text-accent"
           >
             <span className="sr-only">Next story</span>
             <ArrowGlyph direction="right" />

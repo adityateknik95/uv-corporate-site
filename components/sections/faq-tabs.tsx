@@ -86,7 +86,7 @@ export function FaqTabs({ content }: { content: FaqContent }) {
               onClick={() => selectTab(i, false)}
               onKeyDown={onTabKeyDown}
               className={`relative -mb-px inline-flex h-11 items-center border-b-2 px-1 text-small transition-colors duration-200 ease-in-out mr-6 last:mr-0 ${
-                selected ? 'border-brass text-fg' : 'border-transparent text-muted hover:text-fg'
+                selected ? 'border-accent text-fg' : 'border-transparent text-muted hover:text-fg'
               }`}
             >
               {category.label}
