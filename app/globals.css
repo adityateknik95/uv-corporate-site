@@ -38,10 +38,18 @@
   --color-transparent: transparent;
   --color-current: currentColor;
 
-  --color-ground: #14120e;      /* base band   -- reference #FFFFFF          */
-  --color-surface: #1d1a15;     /* raised band -- reference #F2F1EE          */
-  --color-surface-2: #272219;   /* hover / active states                     */
-  --color-rule: #2e2a24;        /* hairline, ~10% white over ground          */
+  /* Revised post-launch: moved from a warm ink ground toward a neutral
+     near-black at the user's explicit direction, after comparing against
+     another build of the same brief. Keeping a hair of hue rather than
+     literal #000 is the one thing carried over from the original reasoning;
+     everything else about how dark it sits is a deliberate change, not a
+     compromise on it. Every ratio below was recomputed and re-gated, not
+     assumed to still hold from the old values. See NOTES.md, "Design
+     revision" for the full account. */
+  --color-ground: #0a0a0b;      /* near-neutral black                        */
+  --color-surface: #151517;     /* raised band                               */
+  --color-surface-2: #1f1f22;   /* hover / active states                     */
+  --color-rule: #2a2a2e;        /* hairline                                  */
   --color-fg: #f2ede4;          /* primary text, warm off-white              */
   --color-muted: #a29886;       /* secondary text, ~65% -- 6.6:1 on ground   */
   --color-brass: #d9a441;       /* the only accent                           */
@@ -62,30 +70,32 @@
   --text-display--line-height: 0.75;
   --text-display--font-weight: 700;
 
-  /* Hero. Light weight at large size -- the reference gets its authority from
-     size and space, not from bold. Reference: 40px / 300 / 1.28 / -0.4px. */
+  /* Hero. Revised post-launch: bolder at the user's explicit direction --
+     the original 300-weight bet was the reference site's own choice, and it
+     lost out on review to a heavier, more assertive headline. Size and
+     tracking stay put; only the weight moved. */
   --text-h1: clamp(30px, 26.67px + 0.926vw, 40px);
-  --text-h1--line-height: 1.28;
+  --text-h1--line-height: 1.2;
   --text-h1--letter-spacing: -0.01em;
-  --text-h1--font-weight: 300;
+  --text-h1--font-weight: 700;
 
-  /* Section heading. Reference: 44px / 400 / 1.06 / -0.22px. */
+  /* Section heading. Bolder for the same reason as h1. */
   --text-h2: clamp(30px, 25.33px + 1.296vw, 44px);
-  --text-h2--line-height: 1.06;
-  --text-h2--letter-spacing: -0.005em;
-  --text-h2--font-weight: 400;
+  --text-h2--line-height: 1.04;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h2--font-weight: 700;
 
-  /* Large card heading. Reference: 32px / 400 / 1.06 / -0.16px. */
+  /* Large card heading. */
   --text-h3: clamp(24px, 21.33px + 0.741vw, 32px);
-  --text-h3--line-height: 1.06;
+  --text-h3--line-height: 1.1;
   --text-h3--letter-spacing: -0.005em;
-  --text-h3--font-weight: 400;
+  --text-h3--font-weight: 600;
 
-  /* Card heading. Reference: 24px / 400 / 1.25 / -0.12px. */
+  /* Card heading. Bolder, same reasoning as h1-h3. */
   --text-h4: clamp(20px, 18.67px + 0.37vw, 24px);
   --text-h4--line-height: 1.25;
   --text-h4--letter-spacing: -0.005em;
-  --text-h4--font-weight: 400;
+  --text-h4--font-weight: 600;
 
   /* Pull quote. Same size as h4 but light. Reference: 24px / 300 / 1.33. */
   --text-quote: clamp(20px, 18.67px + 0.37vw, 24px);

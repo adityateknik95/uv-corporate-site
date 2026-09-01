@@ -20,19 +20,22 @@ import type { Media, Sector } from '@/content';
  * inherit this treatment unchanged.
  */
 
+// Neutral greys, not the warm browns the earlier warm-ink palette used --
+// revised alongside the ground/surface tokens so the hero's decorative
+// field doesn't clash with the now-neutral-black page around it.
 const FIELD: Record<Sector, string> = {
   operations:
-    'radial-gradient(120% 90% at 78% 18%, #2a2419 0%, transparent 60%), radial-gradient(90% 70% at 95% 80%, #221e17 0%, transparent 55%)',
+    'radial-gradient(120% 90% at 78% 18%, #201f22 0%, transparent 60%), radial-gradient(90% 70% at 95% 80%, #1a1a1c 0%, transparent 55%)',
   automation:
-    'radial-gradient(110% 85% at 82% 26%, #2b2419 0%, transparent 58%), radial-gradient(80% 60% at 62% 92%, #1f1c16 0%, transparent 60%)',
+    'radial-gradient(110% 85% at 82% 26%, #212023 0%, transparent 58%), radial-gradient(80% 60% at 62% 92%, #19191b 0%, transparent 60%)',
   telecom:
-    'radial-gradient(130% 95% at 70% 12%, #272219 0%, transparent 62%), radial-gradient(70% 70% at 98% 62%, #241f18 0%, transparent 55%)',
+    'radial-gradient(130% 95% at 70% 12%, #1e1e21 0%, transparent 62%), radial-gradient(70% 70% at 98% 62%, #1c1b1e 0%, transparent 55%)',
   media:
-    'radial-gradient(110% 80% at 85% 22%, #262118 0%, transparent 60%)',
+    'radial-gradient(110% 80% at 85% 22%, #1d1c1f 0%, transparent 60%)',
   education:
-    'radial-gradient(120% 90% at 74% 20%, #2c2519 0%, transparent 60%), radial-gradient(85% 65% at 92% 88%, #201d16 0%, transparent 58%)',
+    'radial-gradient(120% 90% at 74% 20%, #222124 0%, transparent 60%), radial-gradient(85% 65% at 92% 88%, #18181a 0%, transparent 58%)',
   partnership:
-    'radial-gradient(115% 85% at 80% 24%, #282219 0%, transparent 60%)',
+    'radial-gradient(115% 85% at 80% 24%, #1f1e21 0%, transparent 60%)',
 };
 
 /** A faint lattice, sized so it reads as texture rather than as a grid. */

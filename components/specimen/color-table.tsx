@@ -6,7 +6,7 @@ import { contrastRatio, AA_NORMAL, AA_LARGE } from '@/lib/contrast';
 type Kind = 'surface' | 'text' | 'line';
 
 const SWATCHES: readonly { token: string; kind: Kind; role: string }[] = [
-  { token: 'ground', kind: 'surface', role: 'Page ground. Warm ink, hue ~45°, not neutral black.' },
+  { token: 'ground', kind: 'surface', role: 'Page ground. Near-neutral black, not literal #000.' },
   { token: 'surface', kind: 'surface', role: 'First raise: mega menu, promo strip.' },
   { token: 'surface-2', kind: 'surface', role: 'Second raise: hover and active states.' },
   { token: 'rule', kind: 'line', role: 'Hairlines. Separation is done with lines, never shadow.' },

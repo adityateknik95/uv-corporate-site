@@ -19,7 +19,7 @@ import { Inter_Tight } from 'next/font/google';
  */
 export const interTight = Inter_Tight({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '700'],
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
   variable: '--font-inter-tight',
 });

@@ -1001,3 +1001,71 @@ Everything under `TODO_CLIENT_*` (`grep -rn "TODO_CLIENT" content/` — thirteen
 since Phase 0) is real client input still pending, not engineering debt. The GitHub-to-Vercel auto-
 deploy connection is the one piece of process debt worth fixing when there's a spare five minutes:
 right now shipping a change means rebuilding and running `vercel deploy --prod` by hand.
+
+---
+
+## Design revision — after comparing against a second build of the same brief
+
+The client compared this build against another implementation of the identical
+`PROJECT_BRIEF.md` running locally, liked its overall direction, and asked for a redesign in
+three specific respects (confirmed by name, not assumed from a general "I like it"):
+
+1. **Closer to pure black.** The ground moves from a warm ink (`#14120E`) to a near-neutral black
+   (`#0A0A0B`). This directly reverses a Phase 0 decision — the original warm ground was chosen
+   deliberately, reasoned from the company's BPO origins ("a business made of people on shifts, not
+   server racks") against the brief's own warning that "near black around #0B0B0B" reads as the
+   generated-dark-site default. That reasoning wasn't wrong, it was simply overridden: client
+   preference, stated explicitly after a side-by-side comparison, outranks a design rationale I
+   wrote for them in Phase 0. Every dependent token was recomputed, not just the one value —
+   `surface`, `surface-2`, and `rule` all shifted to keep the same relative elevation logic, and
+   `scripts/contrast.mjs` was rerun rather than assumed to still pass: it does, with every ratio
+   *higher* than before (darker ground, same text colours, more contrast headroom).
+
+2. **Bolder, heavier headline type.** `h1` moves from weight 300 to 700, `h2` from 400 to 700,
+   `h3`/`h4` from 400 to 600 (added `600` to the loaded font weights in `lib/fonts.ts` to support
+   it). This also reverses Phase 0 reasoning — the light hero weight was measured directly from
+   the Kyndryl reference and documented as "the reference gets its authority from size and space,
+   not from bold." Same situation: a defensible, measured decision, overridden by an explicit
+   client preference that arrived after seeing an alternative in practice, not a whim to second-
+   guess. Changed at the token layer (`--text-h1--font-weight` etc. in `globals.css`), not by
+   scattering `font-bold` classes through components, so every heading using `text-h1`/`text-h2`
+   picked it up automatically and consistently.
+
+3. **Real reserved image space, not decoration.** The comparison site reserves an `aspect-ratio`
+   box for each card image rather than filling it with a pattern. Worth adopting — but its actual
+   implementation turned out to be broken: every `<img>` there points at `/images/placeholder-*.jpg`,
+   which 404s (`naturalWidth: 0`, `complete: true`). What reads as "a thoughtfully reserved empty
+   space" is really a failed image request showing its container's flat background colour through.
+   Built the working version of the same idea instead: `components/layout/media-slot.tsx`, a real
+   `aspect-ratio` box with a flat `surface-2` tone and the wordmark's own spine mark centred at low
+   opacity, so an empty slot looks intentional and on-brand rather than broken. Swaps to a real
+   `<img>` the instant `media.src` is non-empty — no layout changes needed when photography arrives.
+   This replaced the insights cards' decorative diagonal-gradient `CardField` (removed entirely,
+   it no longer had a job) and, because customer stories never had an image slot to begin with,
+   added one there for the first time — a genuine structural addition, not just a restyle.
+
+### One thing fixed as a side effect
+
+The hero's generated background field (`hero-field.tsx`) used hardcoded warm-brown hex values
+tuned to match the old ink ground. Left alone, they'd have clashed with the new neutral-black
+page — a warm decorative field on a cool-neutral base reads like two different design systems
+stacked on top of each other. Recoloured to neutral greys in the same positions/opacities. Not
+something the client asked for directly, but a direct consequence of change #1 that would have
+been sloppy to ship without noticing.
+
+### What didn't change
+
+The brass accent, the section rhythm, the display-marker device, the hairline-separation-over-
+shadow rule, the 4px radius cap, the restrained one-eyebrow-per-page discipline, and the timeline's
+signature motion are all untouched. The client's picks were specific — ground colour, headline
+weight, image slots — and the redesign stayed scoped to exactly those three, rather than reading
+"I liked that site" as licence to reach for everything it does differently (sharp zero-radius
+corners and an eyebrow above every section were both on the table in the scoping question and
+both went unpicked).
+
+### Verified
+
+`npm run contrast` 11/11 (every ratio improved, not just held), typecheck clean, static export
+builds, zero horizontal overflow at 360px, zero broken image references anywhere in the new
+`MediaSlot` usage (confirmed against the exact failure mode found on the comparison site), h1/h2
+computed weight 700 live in the browser, ground computed as `rgb(10, 10, 11)` live in the browser.

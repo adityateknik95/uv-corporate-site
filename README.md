@@ -45,12 +45,12 @@ change when it arrives.
 
 ## The design, in plain terms
 
-- **Colour:** a warm near-black (`#14120E`), not pure black — pure black next to pure white is
-  tiring to look at for a page this long. One accent colour, a brass/amber, chosen because it's
-  the colour of a status light on a monitored system — which is literally what telecom and
-  outsourced operations are.
-- **Type:** one typeface (Inter Tight), several weights and sizes. The reference site does the
-  same — hierarchy comes from size and space, not from mixing fonts.
+- **Colour:** a near-neutral black (`#0A0A0B`), revised after an early version used a warmer,
+  ink-toned base — client preference, after comparing against an alternative build side by side.
+  One accent colour throughout, a brass/amber, chosen because it's the colour of a status light on
+  a monitored system — which is literally what telecom and outsourced operations are.
+- **Type:** one typeface (Inter Tight), several weights and sizes, with bold, assertive headline
+  weights rather than a light touch — also a direct-comparison call.
 - **The big lowercase words** ("who we are", "stories", "how we help") that appear between
   sections are a direct copy of a device the reference site uses: barely-visible background text,
   same colour as the page around it, that breaks up a long page without needing a second accent

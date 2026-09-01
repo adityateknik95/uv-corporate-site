@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { CustomerStoriesContent } from '@/content';
+import { MediaSlot } from '@/components/layout/media-slot';
 
 /**
  * Carousel with a summary and a full-story toggle per story, matching the
@@ -50,7 +51,9 @@ export function StoriesCarousel({ content }: { content: CustomerStoriesContent }
               aria-hidden={i !== index}
               inert={i !== index}
             >
-              <p className="text-label uppercase text-brass">{story.client}</p>
+              <MediaSlot media={story.media} ratio="16/9" className="max-w-2xl" />
+
+              <p className="mt-8 text-label uppercase text-brass">{story.client}</p>
               <p className="mt-4 text-h3 text-fg measure">{story.summary}</p>
 
               <div

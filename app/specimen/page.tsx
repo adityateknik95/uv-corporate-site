@@ -28,9 +28,9 @@ export default function TokenSpecimenPage() {
 
       <Section number="01" title="Colour">
         <p className="text-body text-muted measure">
-          A warm ink ground rather than the neutral near-black most dark sites land on, and one
-          accent. Brass is the status colour of a live monitored system, which is what telecom and
-          outsourced operations are; it also reads institutional enough to sit under a central
+          A near-neutral black ground, revised from an earlier warm-ink version after review, and
+          one accent. Brass is the status colour of a live monitored system, which is what telecom
+          and outsourced operations are; it also reads institutional enough to sit under a central
           government education partnership. Ratios below are measured in the browser from these
           exact tokens, and the same maths gates the build.
         </p>
