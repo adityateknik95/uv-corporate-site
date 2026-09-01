@@ -2,36 +2,31 @@ import { SiteHeader } from '@/components/chrome/site-header';
 import { SiteFooter } from '@/components/chrome/site-footer';
 import { Section } from '@/components/layout/section';
 import { Hero } from '@/components/sections/hero';
+import { PromoStrip } from '@/components/sections/promo-strip';
 import { Timeline } from '@/components/sections/timeline';
 import { JumpNav } from '@/components/sections/jump-nav';
 import { RecognitionCarousel } from '@/components/sections/recognition-carousel';
 import { StoriesCarousel } from '@/components/sections/stories-carousel';
 import { HowWeHelp } from '@/components/sections/how-we-help';
 import { FeatureBanner } from '@/components/sections/feature-banner';
+import { InsightsGrid } from '@/components/sections/insights-grid';
+import { QuotesCarousel } from '@/components/sections/quotes-carousel';
+import { PartnerTrack } from '@/components/sections/partner-track';
+import { CareersBand } from '@/components/sections/careers-band';
+import { FaqTabs } from '@/components/sections/faq-tabs';
+import { ContactCta } from '@/components/sections/contact-cta';
 import { content } from '@/content';
 
 /**
- * PHASE 3 — jump-to nav, how we help, feature banner, customer stories and
- * recognition carousels.
+ * PHASE 4 — the page is now content-complete.
  *
- * The remaining sections (promo strip, insights, expertise, partners,
- * careers, FAQ, contact) are still empty landmarks so the band alternation
- * and vertical rhythm stay judgeable. Phase 4 fills them.
- *
- * Band order follows the reference: alternate the base and raised tones so a
- * very long page does not read as one slab. Display markers are reserved for
- * the major sections, as they are on the reference -- using one everywhere
+ * Promo strip, insights, expertise quotes, partner logo track, careers band,
+ * FAQ, contact CTA. Band order follows the reference: alternate the base
+ * and raised tones so a very long page does not read as one slab. Display
+ * markers are reserved for major sections -- who we are, stories, how we
+ * help, expertise -- as they are on the reference; using one everywhere
  * would spend the device and flatten the rhythm it exists to create.
  */
-
-const PENDING_SECTIONS = [
-  { id: 'insights', heading: 'Insights', tone: 'surface', phase: 'Phase 4' },
-  { id: 'expertise', heading: 'Trusted. Experienced. Skilled.', marker: 'expertise', tone: 'ground', phase: 'Phase 4' },
-  { id: 'partners', heading: 'Who we work with', tone: 'surface', phase: 'Phase 4' },
-  { id: 'careers', heading: 'Careers', tone: 'ground', phase: 'Phase 4' },
-  { id: 'faq', heading: 'Questions we get asked', tone: 'surface', phase: 'Phase 4' },
-  { id: 'contact', heading: 'Start a conversation', tone: 'ground', phase: 'Phase 4' },
-] as const;
 
 export default function HomePage() {
   return (
@@ -40,6 +35,10 @@ export default function HomePage() {
 
       <main id="main" className="relative z-10">
         <Hero content={content.hero} />
+
+        <Section bleed tone="ground" className="border-b border-rule">
+          <PromoStrip content={content.promo} />
+        </Section>
 
         <JumpNav content={content.jumpNav} />
 
@@ -52,11 +51,7 @@ export default function HomePage() {
           <Timeline content={content.whoWeAre} />
         </Section>
 
-        <Section
-          id={content.recognition.id}
-          tone="surface"
-          heading={content.recognition.heading}
-        >
+        <Section id={content.recognition.id} tone="surface" heading={content.recognition.heading}>
           <RecognitionCarousel content={content.recognition} />
         </Section>
 
@@ -84,17 +79,34 @@ export default function HomePage() {
             1460px content column. Hero is full-bleed for the same reason. */}
         <FeatureBanner content={content.featureBanner} />
 
-        {PENDING_SECTIONS.map((section) => (
-          <Section
-            key={section.id}
-            id={section.id}
-            tone={section.tone}
-            marker={'marker' in section ? section.marker : undefined}
-            heading={section.heading}
-          >
-            <p className="text-label uppercase text-muted">{section.phase}</p>
-          </Section>
-        ))}
+        <Section id={content.insights.id} tone="ground" heading={content.insights.heading}>
+          <InsightsGrid content={content.insights} />
+        </Section>
+
+        <Section
+          id={content.quotes.id}
+          tone="surface"
+          marker="expertise"
+          heading={content.quotes.heading}
+        >
+          <QuotesCarousel content={content.quotes} />
+        </Section>
+
+        <Section tone="ground" heading={content.partners.heading}>
+          <PartnerTrack content={content.partners} />
+        </Section>
+
+        <Section id={content.careers.id} tone="surface" heading={content.careers.heading}>
+          <CareersBand content={content.careers} />
+        </Section>
+
+        <Section id={content.faq.id} tone="ground" heading={content.faq.heading}>
+          <FaqTabs content={content.faq} />
+        </Section>
+
+        <Section id={content.contactCta.id} tone="surface">
+          <ContactCta content={content.contactCta} />
+        </Section>
       </main>
 
       <SiteFooter content={content.site} />

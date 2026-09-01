@@ -762,3 +762,96 @@ one.
   strip is the only thing that reports as "overflowing" a naive bounding-box scan, which is by
   design -- it is a deliberately horizontally-scrollable strip, not a page overflow.
 - `npm run contrast` 11/11, typecheck clean, static export builds.
+
+---
+
+## Phase 4 — supporting sections: the page is content-complete
+
+Promo strip, insights grid, expertise quotes, partner logo track, careers band, FAQ, contact CTA.
+
+### Against the reference, stated before building
+
+**Promo strip.** Reference: three small cards directly under the hero, category label above a
+heading. Matched, using the same rule-divided-single-surface treatment as the footer and mega
+menu -- no card borders, no shadow.
+
+**Insights grid.** Reference: three article cards, category label plus image. No articles or
+photography were supplied, so each card's `media.src` is empty and a generated tonal block renders
+in its place -- the same imagery rule as the hero, applied consistently rather than reaching for a
+stock photo to fill the gap.
+
+**Expertise quotes.** Reference: a leadership quote carousel with name, role, social link. Same
+mechanism, placeholder attribution -- inventing a named executive is the most damaging placeholder
+a corporate page can carry, so every name here says "pending."
+
+**Partner logo track.** Reference: presumably a continuous horizontal track (unable to inspect its
+actual markup on this homepage -- the section renders logos as lazy-loaded images that were not in
+the DOM at measurement time). Built to the brief's explicit spec instead: continuous horizontal
+track, pauses on hover and under reduced motion. No logo files exist for the three organisations
+the client actually named, so each renders as a typographic wordmark at reduced opacity that
+brightens on hover -- the brief's own rule for monochrome logos on black, applied to text since
+there is no image yet to desaturate.
+
+**Careers band.** Reference: two cards. Matched using the same divided-surface treatment as the
+promo strip.
+
+**FAQ.** Not present on the India homepage as measured -- no tab or accordion markup exists on
+this specific page. Same situation as Phase 3's jump-to nav: likely a pattern from Kyndryl's longer
+solution pages. Built to the brief's explicit spec (category tabs, an accordion inside each tab)
+using the APG tabs pattern rather than improvising one.
+
+**Contact CTA.** Reference: two actions, an inquiry path and a subscribe form. Matched. The
+subscribe form has nowhere real to submit -- no backend on a static export, no endpoint supplied --
+so it prevents default and shows an honest local acknowledgment rather than either faking a
+network call or leaving the control inert.
+
+### Decisions worth naming
+
+**The reduced-motion fix for the marquee is at the CSS layer, not just the global one.**
+`globals.css` already shortens every transition/animation to `0.01ms` under
+`prefers-reduced-motion`, which is fine for a one-shot transition but wrong for an infinite-loop
+marquee: at 0.01ms the animation still runs, just snapping through its full `translateX` every
+0.01ms -- a flicker, not a freeze. Added an explicit `.partner-track { animation: none }` inside
+the same media block. Verified in the compiled CSS that this rule sits after the `!important`
+global overrides and there is exactly one un-media-gated `.partner-track` animation rule, so the
+override is real and not shadowed.
+
+**FAQ tabs use the APG pattern, not native `<details>`.** Only the selected tab sits in the
+natural tab order; Left/Right move both focus and selection between tabs (a same-page content
+switch, activating on arrow is correct here, unlike a set of links); Home/End jump to the first and
+last tab. Verified: 15 separate assertions across selection state, ARIA wiring, and all four
+keyboard paths, all passing. The accordion inside each panel is a second, independent layer --
+opening one question does not affect any other, verified by opening two, closing one, and checking
+the other stayed open.
+
+**Careful about a specific class of false negative in this test environment, again.** The stories
+carousel in Phase 3 and now nothing new here repeated that exact failure -- but the discipline it
+taught carried over directly: every assertion in this phase that could be affected by a stalled
+paint (opacity checks, height checks) was either re-verified after a full reload with a longer
+settle, or checked against a raw DOM property (`aria-expanded`, `.style.opacity`, `hidden`) rather
+than a computed one where possible.
+
+### Verified
+
+- FAQ: 15 assertions across the tablist -- correct initial selection, roving tab order, all four
+  keyboard paths (Right, Left, Home, End) moving both focus and selection, `aria-controls` /
+  `aria-labelledby` wired correctly. Accordion: starts collapsed, opens/closes independently per
+  question, two open at once with no interaction between them.
+- Partner track: 3 real logos + 3 `aria-hidden` duplicates for the seamless loop, `animation:
+  marquee 32s infinite`, hover/focus-within pause rule present, reduced-motion override confirmed
+  in the compiled CSS to sit inside the media block rather than being shadowed by it.
+- Expertise quotes: pagination switches the active quote with zero layout shift, inactive quotes
+  `inert`.
+- Contact form: required email input with a real label, submits without navigating away, shows an
+  honest status message rather than pretending to succeed.
+- Promo strip, insights grid, careers band: correct card counts, insight cards confirmed to render
+  the generated field rather than an `<img>` when `media.src` is empty, promo links resolve to real
+  in-page anchors.
+- 360px: zero horizontal overflow anywhere on the now-complete page.
+- `npm run contrast` 11/11, typecheck clean, static export builds.
+- All 13 `TODO_CLIENT_*` keys from Phase 0 remain intact and greppable -- nothing built in Phase 4
+  quietly filled a gap with invented content.
+
+The page is now content-complete. What remains is Phase 5: a responsive audit at the brief's four
+breakpoints, a Lighthouse pass, image optimisation, a focus-state audit, a reduced-motion audit,
+deployment, and this file's conversion into a README a non-engineer can read.
