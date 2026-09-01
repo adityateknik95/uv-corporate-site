@@ -691,3 +691,74 @@ reveals fail.
 Still not verifiable in this environment: how the motion actually *looks* mid-flight. The pane
 does not run `requestAnimationFrame`, so every transition is measured at its endpoints only. The
 timeline reveal and the hero cross-fade need a real browser before this is sent.
+
+---
+
+## Phase 3 — jump-to nav, how we help, feature banner, stories and recognition
+
+### Against the reference, stated before building
+
+**Jump-to nav.** Not present on the India homepage as measured -- the "sticksections"
+components there have no visible in-page nav, so it appears to be a pattern from Kyndryl's longer
+solution pages rather than this one. Built to the brief's explicit spec (section 5) rather than to
+something observed on the reference: anchor links, sticky under the header, active section
+highlighted on scroll.
+
+**Recognition.** Reference: Previous/Next arrows plus numbered tabs (01, 02, 03…), one item shown
+at a time, a large statement with a source line. Mine matches that mechanism exactly; only the
+copy is placeholder, since no citations were supplied (`content/recognition.ts`).
+
+**Customer stories.** Reference: a "Read full story" control per story. Mine adds the story-to-
+story carousel the brief's inventory calls for (`Previous story` / `Next story`) and keeps the
+per-story expand independent of which story is currently showing.
+
+**How we help.** Reference implements this as a sticky-scroll list -- four headings in one column
+scrolling past a pinned image on the other side. Deliberately not reproduced; see the component's
+own doc comment for the reasoning. Built as a static two-column grid of heading/body/link instead,
+which is what the brief's own section inventory reduces this component to.
+
+**Feature banner.** Reference: a full-width CTA band, one message, one action. Matched, using the
+one accent colour rather than introducing the reference's separate pale-mint background for a
+single band.
+
+### The bug that wasn't, and the one that was
+
+Two things looked broken in this environment and needed to be told apart.
+
+**Real bug:** `useActiveSection` picked the *last* id in the caller's array whose section had
+scrolled past the line -- which assumes the array is already in top-to-bottom document order. It
+usually is not; it is editorial order. `content/jump-nav.ts` still listed "How we help" before
+"Stories" from Phase 0, but Phase 3 rendered Stories first in the DOM. Scrolled to the How We Help
+section, both anchors had scrolled past the line, and Stories -- later in the array -- won,
+reporting the wrong active link. Fixed by sorting `ids` by actual `getBoundingClientRect().top`
+before picking, so the hook is correct regardless of what order its caller's list happens to be
+in. Also reordered the content file to match, for readability, though the hook no longer depends
+on it. Same root cause, different shape, as the `rAF`-throttle bug removed from this same hook
+minutes earlier -- both were the hook trusting something about its environment that turned out
+not to hold.
+
+**Not a bug:** the stories carousel's Next control appeared to do nothing on the first test --
+`getComputedStyle().opacity` read the same before and after a click. Two more clicks in two more
+separate script calls landed on the same tab and the index had visibly advanced by two, which
+meant the first click *had* worked; the read of it had raced React's commit in this pane's stalled
+compositor, the same class of false negative documented in Phase 1 and Phase 2. Re-tested with a
+longer settle and the raw `style.opacity` attribute rather than the computed value, on a freshly
+loaded tab: single click, single advance, exactly as written. Recorded here because it is the
+second time in three phases a real click has looked broken purely because this test environment
+does not paint on the same clock as everything else -- worth remembering before trusting the next
+one.
+
+### Verified
+
+- Jump-nav: active link tracks the actual section on screen, in real document order, correctly at
+  Who we are / Stories / How we help / Insights.
+- Recognition: Previous/Next and numbered tabs both work; inactive items are `inert`; no layout
+  shift switching between items of different length (565px before and after, confirmed on the
+  actual `[aria-hidden]` items, not their decorative SVG icons which share the attribute).
+- Stories: story-to-story navigation advances and reverses correctly; per-story expand/collapse is
+  independent of which story is current, confirmed by expanding story 2, navigating away and back,
+  and finding it still expanded while story 1 stayed untouched.
+- 360px: zero document-level horizontal overflow. The jump-nav's own internal `overflow-x-auto`
+  strip is the only thing that reports as "overflowing" a naive bounding-box scan, which is by
+  design -- it is a deliberately horizontally-scrollable strip, not a page overflow.
+- `npm run contrast` 11/11, typecheck clean, static export builds.

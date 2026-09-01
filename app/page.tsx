@@ -3,14 +3,20 @@ import { SiteFooter } from '@/components/chrome/site-footer';
 import { Section } from '@/components/layout/section';
 import { Hero } from '@/components/sections/hero';
 import { Timeline } from '@/components/sections/timeline';
+import { JumpNav } from '@/components/sections/jump-nav';
+import { RecognitionCarousel } from '@/components/sections/recognition-carousel';
+import { StoriesCarousel } from '@/components/sections/stories-carousel';
+import { HowWeHelp } from '@/components/sections/how-we-help';
+import { FeatureBanner } from '@/components/sections/feature-banner';
 import { content } from '@/content';
 
 /**
- * PHASE 2 — hero and the Who We Are timeline.
+ * PHASE 3 — jump-to nav, how we help, feature banner, customer stories and
+ * recognition carousels.
  *
- * The remaining sections are still empty landmarks so the band alternation,
- * the display markers, the anchors and the vertical rhythm stay judgeable.
- * Phases 3 and 4 fill them.
+ * The remaining sections (promo strip, insights, expertise, partners,
+ * careers, FAQ, contact) are still empty landmarks so the band alternation
+ * and vertical rhythm stay judgeable. Phase 4 fills them.
  *
  * Band order follows the reference: alternate the base and raised tones so a
  * very long page does not read as one slab. Display markers are reserved for
@@ -18,11 +24,7 @@ import { content } from '@/content';
  * would spend the device and flatten the rhythm it exists to create.
  */
 
-const SECTIONS = [
-  { id: 'recognition', heading: 'Recognition', tone: 'surface', phase: 'Phase 3' },
-  { id: 'stories', heading: 'Progress, one customer at a time', marker: 'stories', tone: 'ground', phase: 'Phase 3' },
-  { id: 'how-we-help', heading: 'Four capabilities', marker: 'how we help', tone: 'surface', phase: 'Phase 3' },
-  { id: 'feature', heading: 'Education delivery, across India', tone: 'ground', phase: 'Phase 3' },
+const PENDING_SECTIONS = [
   { id: 'insights', heading: 'Insights', tone: 'surface', phase: 'Phase 4' },
   { id: 'expertise', heading: 'Trusted. Experienced. Skilled.', marker: 'expertise', tone: 'ground', phase: 'Phase 4' },
   { id: 'partners', heading: 'Who we work with', tone: 'surface', phase: 'Phase 4' },
@@ -39,6 +41,8 @@ export default function HomePage() {
       <main id="main" className="relative z-10">
         <Hero content={content.hero} />
 
+        <JumpNav content={content.jumpNav} />
+
         <Section
           id={content.whoWeAre.id}
           tone="ground"
@@ -48,7 +52,39 @@ export default function HomePage() {
           <Timeline content={content.whoWeAre} />
         </Section>
 
-        {SECTIONS.map((section) => (
+        <Section
+          id={content.recognition.id}
+          tone="surface"
+          heading={content.recognition.heading}
+        >
+          <RecognitionCarousel content={content.recognition} />
+        </Section>
+
+        <Section
+          id={content.stories.id}
+          tone="ground"
+          marker="stories"
+          heading={content.stories.heading}
+        >
+          <StoriesCarousel content={content.stories} />
+        </Section>
+
+        <Section
+          id={content.howWeHelp.id}
+          tone="surface"
+          marker="how we help"
+          heading={content.howWeHelp.heading}
+          lead={content.howWeHelp.lead}
+        >
+          <HowWeHelp content={content.howWeHelp} />
+        </Section>
+
+        {/* Not wrapped in Section: the band's background has to run the full
+            viewport width, and Section's Container would confine it to the
+            1460px content column. Hero is full-bleed for the same reason. */}
+        <FeatureBanner content={content.featureBanner} />
+
+        {PENDING_SECTIONS.map((section) => (
           <Section
             key={section.id}
             id={section.id}

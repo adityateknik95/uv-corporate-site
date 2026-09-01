@@ -124,3 +124,57 @@ export function useFocusTrap(ref: React.RefObject<HTMLElement | null>, active: b
     };
   }, [ref, active]);
 }
+
+/**
+ * Which of `ids` counts as the "active" section right now, for a jump-to nav.
+ *
+ * Geometry-driven, like the timeline reveal, rather than IntersectionObserver
+ * alone -- the active section is "whichever one's top has most recently
+ * crossed the line", which is a relationship *between* sections, not a
+ * boolean on one of them, so a plain observer threshold does not model it
+ * cleanly. Picking the last section whose top is at or above `offset` does.
+ *
+ * Deliberately not rAF-throttled. A rAF gate that never gets a frame (a
+ * throttled tab, some embedded webviews) leaves the "already scheduled" flag
+ * stuck true forever, so the nav freezes on whatever was active first -- the
+ * exact failure the timeline reveal had to be rewritten around. Ten
+ * getBoundingClientRect() reads per scroll event is cheap enough that the
+ * throttle was solving a problem that did not exist.
+ *
+ * `ids` is sorted by actual document position before each computation,
+ * never trusted to already be in top-to-bottom order. It usually comes from
+ * a content array (nav link order), which is an editorial ordering, not a
+ * layout one -- and the two silently disagreed here once once Phase 3 landed
+ * "Stories" before "How we help" in the DOM while the nav copy still listed
+ * them the other way. Sorting by position makes "last one past the line"
+ * correct regardless of what order the caller's list happens to be in.
+ */
+export function useActiveSection(ids: string[], offset = 120): string | null {
+  const [active, setActive] = useState<string | null>(null);
+
+  useEffect(() => {
+    const compute = () => {
+      const inDocumentOrder = ids
+        .map((id) => ({ id, el: document.getElementById(id) }))
+        .filter((entry): entry is { id: string; el: HTMLElement } => entry.el !== null)
+        .sort((a, b) => a.el.getBoundingClientRect().top - b.el.getBoundingClientRect().top);
+
+      let current: string | null = null;
+      for (const { id, el } of inDocumentOrder) {
+        if (el.getBoundingClientRect().top <= offset) current = id;
+      }
+      setActive(current);
+    };
+
+    compute();
+    window.addEventListener('scroll', compute, { passive: true });
+    window.addEventListener('resize', compute, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', compute);
+      window.removeEventListener('resize', compute);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- ids is stable content, not identity
+  }, [ids.join('|'), offset]);
+
+  return active;
+}
