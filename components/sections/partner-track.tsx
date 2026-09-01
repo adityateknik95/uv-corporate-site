@@ -44,7 +44,15 @@ export function PartnerTrack({ content }: { content: PartnersContent }) {
               aria-hidden={i >= content.logos.length}
               className="flex shrink-0 items-center"
             >
-              <span className="text-h4 text-muted opacity-70 transition-opacity duration-200 ease-in-out hover:text-fg hover:opacity-100">
+              {/* `text-muted` alone, no extra opacity layer -- `muted` at
+                  6.57:1 is already the reduced-emphasis treatment. Stacking
+                  opacity-70 on top pushed it to 3.81:1, under the 4.5:1 these
+                  names actually need since a low-vision or screen-reader user
+                  has to be able to read who the partners are, unlike the
+                  decorative display markers. Same class of bug as the
+                  timeline's text-muted/80 in Phase 2: an opacity modifier
+                  drifting a token off the set the contrast gate measures. */}
+              <span className="text-h4 text-muted transition-colors duration-200 ease-in-out hover:text-fg">
                 {logo.name}
               </span>
             </li>

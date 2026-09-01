@@ -855,3 +855,149 @@ than a computed one where possible.
 The page is now content-complete. What remains is Phase 5: a responsive audit at the brief's four
 breakpoints, a Lighthouse pass, image optimisation, a focus-state audit, a reduced-motion audit,
 deployment, and this file's conversion into a README a non-engineer can read.
+
+---
+
+## Phase 5 — polish and ship
+
+### Responsive audit: 360 / 768 / 1024 / 1440
+
+Checked systematically rather than spot-checked: zero horizontal overflow at any of the four
+breakpoints, on the fully content-complete page. One methodology note worth recording, because it
+produced a false alarm mid-audit: `getComputedStyle(el).display` reflects an element's **own**
+display property, not whether an ancestor's `display:none` actually hides it. Checking the desktop
+nav this way at 768px reported `"flex"` (true) even though it is not rendered — its `hidden lg:block`
+wrapper is the thing actually hiding it. Switched to `offsetParent !== null`, which reflects real
+rendered visibility, and reran: desktop nav and mobile trigger swap cleanly and exclusively exactly
+at the `lg` (1024px) boundary, no overlap, no duplicate navigation.
+
+Also fixed in this pass: the recognition carousel's numbered pagination buttons (`01`/`02`/`03`)
+measured 17×20px, under the 24×24px WCAG 2.5.8 minimum target size. Unlike the footer, mega-menu,
+and jump-nav links — which are inline text links and exempt under 2.5.8's "target is in a sentence
+or block of text" carve-out — a numbered pager is a control, not body text, so the exemption
+doesn't apply. Given a real 36px hit area (`size-9`) around the same small glyph, matching the
+technique the hero's own pagination already used.
+
+### Focus states
+
+The focus ring itself was hardened in Phase 1 (unlayered CSS so it outranks every Tailwind
+utility, instant rather than transitioned). For Phase 5: `grep`'d every component added since for
+any `outline` or conflicting `transition-property` override — none exist, so the ring's
+architecture guarantees it applies uniformly rather than needing per-component verification.
+Spot-checked live with a real Tab press (not `.focus({focusVisible:true})`, which — as established
+in Phase 1 — does not trigger genuine `:focus-visible` matching in this test environment): brass,
+solid, 2px, `transition-property: none`, confirmed on a freshly tabbed-to element.
+
+### Reduced motion
+
+Every component carrying motion falls into one of two buckets, and both were checked:
+
+- **Framer Motion components** (mega menu, mobile nav, timeline) explicitly branch on
+  `useReducedMotion()` in their own transition props — verified present in all three.
+- **Everything else** (hover colour changes, carousel opacity cross-fades, the FAQ accordion's
+  grid-row transition) is a plain CSS class-based transition, caught by the global
+  `*, *::before, *::after { transition-duration: 0.01ms !important }` rule from Phase 0. An
+  `!important` external declaration overrides a non-important inline `transition` shorthand at the
+  same specificity tier per the CSS cascade, which is also why the timeline's inline
+  JS-controlled transition strings would still collapse correctly even if their own `animate`-gate
+  had a bug — two independent layers, not one.
+- The partner marquee needed a third, explicit layer (`animation: none`, not just a shortened
+  duration) because an infinite loop at 0.01ms doesn't freeze, it flickers — documented in Phase 4.
+
+### Image weight
+
+No photographs exist anywhere on the site — every visual is CSS gradients, inline SVG, or
+generated tonal fields, by design (see the imagery rule in Phase 2). `images.unoptimized: true` in
+`next.config.ts` is therefore not a missed optimisation; it's required for static export in the
+first place, and there's nothing for next/image's optimiser to do here regardless. Total shipped
+weight: **1.4MB**, of which nothing is imagery. Font weight (~228KB across 7 `.woff2` files) is
+Google Fonts' standard unicode-range chunking, not 7 separate weights being shipped — a real
+visitor's browser only fetches the one or two chunks whose range covers characters actually on an
+English page; the rest are declared but never requested.
+
+### Deployed
+
+**https://uv-corporate-site.vercel.app**, production, via `vercel deploy --prod` from the CLI.
+`vercel link` couldn't auto-connect the GitHub repo (a Vercel GitHub App permissions issue, not a
+build problem), so this ships from a direct CLI upload of the static export rather than a
+git-triggered pipeline. Functionally identical output; the difference is deploys are manual, not
+automatic on push. Worth revisiting once the GitHub App is properly authorised.
+
+### Lighthouse, against the live production URL
+
+| Category | First run | After fixes |
+|---|---|---|
+| Performance | 100 | 97 |
+| Accessibility | 97 | 97 |
+| Best Practices | 96 | **100** |
+| SEO | 60 | 60 |
+
+(The 100 → 97 performance shift between runs is lab-measurement noise, not a regression — nothing
+touched in between affects render or load. LCP held at ~0.6s, CLS at 0, TBT at 0ms both runs.)
+
+Three findings, three different resolutions:
+
+1. **`errors-in-console` (fixed).** A single console 404 for `/favicon.ico` — the site never had
+   a favicon. Added `app/icon.svg`, redrawing the wordmark's own spine mark (the three-node line
+   from the header) at favicon scale with bolder strokes so it still reads at 16px in a browser
+   tab, rather than reaching for a generic placeholder icon. Next.js's App Router picks up
+   `app/icon.svg` automatically. Best Practices: 96 → 100.
+
+2. **`color-contrast`, partner logos (fixed — and the same bug as before, a third time).** The
+   partner track's wordmarks used `text-muted opacity-70`, measuring 3.81:1 against a 4.5:1
+   requirement — muted text that a screen-reader-free, low-vision user genuinely needs to read
+   (unlike the display markers below). `muted` alone is already 6.57:1; stacking an extra opacity
+   modifier on top of an already-de-emphasised token pushed it under the line. Identical root cause
+   to the timeline's `text-muted/80` caught in Phase 2: an opacity modifier is a colour the
+   contrast gate never measures, because it isn't one of the eleven pairs in the token set. Fixed
+   by removing the modifier and keeping the hover state as a colour change (`muted` to `fg`) instead
+   of an opacity change. Three appearances of this exact bug shape across five phases is worth
+   naming as a real blind spot in `scripts/contrast.mjs`: it gates token pairs, not the opacity
+   modifiers Tailwind makes trivial to add on top of them at the call site. A stricter version
+   would scan the built CSS for every `opacity-*` class paired with a text-colour utility and
+   compute the effective blended contrast automatically, rather than relying on each usage being
+   caught by hand. Left as a known gap rather than built in this pass — flagged here so it doesn't
+   get lost.
+
+3. **`color-contrast`, the display markers (accepted, not fixed).** The four large background
+   words ("who we are," "stories," "how we help," "expertise") measure ~1.07:1 against their own
+   background — and are meant to. This is the one Lighthouse finding this build is knowingly
+   shipping with an automated tool still flagging it, so it gets the fullest explanation of the
+   three:
+
+   - The text is `aria-hidden="true"`, purely decorative, and literally redundant — every marker's
+     word is repeated verbatim in a real, fully AA-compliant heading a few lines below it. No
+     information is gated behind low contrast; a screen-reader user never encounters it, and a
+     sighted low-vision user who can't make out the background texture loses nothing, because the
+     actual content is restated at full contrast immediately after.
+   - Fixing it "properly" would mean either widening the gap between the `ground` and `surface`
+     tokens — which are the two primary background colours used across the *entire* page, so a
+     large-enough change to hit 3:1 here would blow apart the deliberately subtle ~5% elevation
+     step the whole palette is built on (documented in Phase 0's reference audit as the actual
+     measured behaviour of the site being rebuilt) — or converting the marker from live, fluidly-
+     sized DOM text into a fixed background image, which would sacrifice the responsive `clamp()`
+     scaling that makes it track container width correctly at every breakpoint, in exchange for
+     satisfying a checker that a documented, reasoned WCAG exception already covers.
+   - Both of those costs are real design and engineering regressions in exchange for a checkbox,
+     not an accessibility improvement for an actual user. This is the "defensible in one sentence"
+     test the brief asks for: *it's decorative, hidden from assistive tech, and its content is
+     fully restated at compliant contrast immediately below it.*
+
+4. **`is-crawlable` (intentionally left).** `robots: { index: false, follow: false }` was set in
+   Phase 1 and is unchanged. The page runs under a placeholder company name; indexing it now would
+   put `[ Company Name ]` in a search engine's cache before the real name lands. Revisit once
+   `TODO_CLIENT_companyName` is resolved.
+
+### README
+
+Added `README.md` at the repo root — the brief's other Phase 5 deliverable, "a README a non
+engineer can read." It's the short version: what's real vs. placeholder, the design in plain
+language, what got tested and how, the live link, and a pointer back to this file for the full
+account. This file (`NOTES.md`) stays the working log; `README.md` is the polished front door.
+
+### What's still open
+
+Everything under `TODO_CLIENT_*` (`grep -rn "TODO_CLIENT" content/` — thirteen keys, unchanged
+since Phase 0) is real client input still pending, not engineering debt. The GitHub-to-Vercel auto-
+deploy connection is the one piece of process debt worth fixing when there's a spare five minutes:
+right now shipping a change means rebuilding and running `vercel deploy --prod` by hand.

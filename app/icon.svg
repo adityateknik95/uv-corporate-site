@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!--
+    The favicon was missing entirely (a genuine 404 Lighthouse's
+    errors-in-console audit caught in Phase 5, not a design choice). Rather
+    than a generic placeholder, it's the wordmark's own spine mark -- the
+    same three-node line used in the header -- redrawn at favicon scale with
+    bolder strokes so it still reads at 16px in a browser tab. Colours are
+    hardcoded hex rather than the CSS custom properties the live wordmark
+    uses, since a favicon is consumed outside any page context that would
+    resolve them.
+  -->
+  <rect width="32" height="32" fill="#14120E" />
+  <line x1="10" y1="6" x2="10" y2="26" stroke="#332C22" stroke-width="1.6" />
+  <circle cx="10" cy="9" r="3" fill="#D9A441" />
+  <circle cx="10" cy="16" r="3" fill="#A29886" />
+  <circle cx="10" cy="23" r="3" fill="#A29886" />
+  <line x1="16" y1="9" x2="26" y2="9" stroke="#D9A441" stroke-width="1.6" />
+</svg>

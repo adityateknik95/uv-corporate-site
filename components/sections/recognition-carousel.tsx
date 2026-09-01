@@ -72,7 +72,12 @@ export function RecognitionCarousel({ content }: { content: RecognitionContent }
                 type="button"
                 onClick={() => go(i)}
                 aria-current={i === index ? 'true' : undefined}
-                className={`text-small tabular-nums transition-colors duration-200 ease-in-out ${
+                // Hit area is a real 36px square (the hero's pagination uses
+                // the same trick); only the glyph inside stays small. A
+                // numbered pager is a control, not body text, so it doesn't
+                // get WCAG 2.5.8's inline-text exemption from the 24x24
+                // minimum target size.
+                className={`inline-flex size-9 items-center justify-center text-small tabular-nums transition-colors duration-200 ease-in-out ${
                   i === index ? 'text-brass' : 'text-muted hover:text-fg'
                 }`}
               >
