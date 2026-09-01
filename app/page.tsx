@@ -1,15 +1,16 @@
 import { SiteHeader } from '@/components/chrome/site-header';
 import { SiteFooter } from '@/components/chrome/site-footer';
 import { Section } from '@/components/layout/section';
-import { Container } from '@/components/layout/container';
+import { Hero } from '@/components/sections/hero';
+import { Timeline } from '@/components/sections/timeline';
 import { content } from '@/content';
 
 /**
- * PHASE 1 — the shell, rebuilt against the reference audit.
+ * PHASE 2 — hero and the Who We Are timeline.
  *
- * Sections are present as empty landmarks so the band alternation, the display
- * markers, the anchors and the vertical rhythm can be judged before any of them
- * has content. Phase 2 fills the hero and the timeline.
+ * The remaining sections are still empty landmarks so the band alternation,
+ * the display markers, the anchors and the vertical rhythm stay judgeable.
+ * Phases 3 and 4 fill them.
  *
  * Band order follows the reference: alternate the base and raised tones so a
  * very long page does not read as one slab. Display markers are reserved for
@@ -18,7 +19,6 @@ import { content } from '@/content';
  */
 
 const SECTIONS = [
-  { id: 'who-we-are', heading: 'Who we are', marker: 'who we are', tone: 'ground', phase: 'Phase 2 — the signature timeline' },
   { id: 'recognition', heading: 'Recognition', tone: 'surface', phase: 'Phase 3' },
   { id: 'stories', heading: 'Progress, one customer at a time', marker: 'stories', tone: 'ground', phase: 'Phase 3' },
   { id: 'how-we-help', heading: 'Four capabilities', marker: 'how we help', tone: 'surface', phase: 'Phase 3' },
@@ -37,20 +37,16 @@ export default function HomePage() {
       <SiteHeader content={content.site} />
 
       <main id="main" className="relative z-10">
-        {/* Phase 2 replaces this with the hero. The header is fixed and
-            transparent over it, so the hero owns the top padding that clears
-            the row rather than main pushing everything down. */}
-        <section className="bg-ground pt-[var(--spacing-header)]">
-          <Container className="py-20 lg:py-32">
-            <p className="mb-2 text-label uppercase text-brass">Phase 1 — shell</p>
-            <h1 className="text-h1 text-fg measure">The shell, before the content.</h1>
-            <p className="mt-4 text-lead text-muted measure">
-              Header, mega menu, mobile navigation, footer and the section primitive, rebuilt to
-              the measured reference. Every section below is a real landmark with a real anchor and
-              nothing in it yet — which is the point of building the shell first.
-            </p>
-          </Container>
-        </section>
+        <Hero content={content.hero} />
+
+        <Section
+          id={content.whoWeAre.id}
+          tone="ground"
+          marker="who we are"
+          heading={content.whoWeAre.heading}
+        >
+          <Timeline content={content.whoWeAre} />
+        </Section>
 
         {SECTIONS.map((section) => (
           <Section

@@ -596,3 +596,98 @@ menu still opens and closes on Escape, and no horizontal overflow at 360px.
 - **Partner logos** as monochrome white at reduced opacity, brightening on hover — Phase 4.
 - The reference's own section order beyond the shell (recognition before stories, feature banner
   after how-we-help) is reflected in the page skeleton and gets filled in Phases 3–4.
+
+---
+
+## Phase 2 — hero and Who We Are
+
+### Against the reference, stated before building
+
+**Hero.** Reference: full-bleed media with the header transparent over it, a left-aligned
+light-weight headline on a short measure, a subline, one action, and pagination bottom-left of the
+content column, auto-rotating through three slides. Mine matches that structure and differs only
+in colour and in using a generated field instead of photography, because no assets were supplied.
+
+**Who we are.** The reference has no timeline; its nearest equivalent is a statement block. This
+is the one deliberate **content** departure, and the brief explicitly earns it: the history is the
+only real content supplied and it is a genuine sequence. It keeps the reference's structural
+language — container, band, display marker, type scale, rhythm — and spends the departure only on
+the timeline's internal treatment and the single motion moment.
+
+### The imagery rule
+
+The audit calls for one consistent treatment, because bright media pasted onto a black page looks
+pasted on. Two layers, applied identically to a real photograph or the generated field:
+
+1. The media, desaturated to 0.7 and slightly contrast-lifted.
+2. A two-part scrim — horizontal from the ground colour on the reading edge so the headline sits
+   on near-solid ground, then vertical from the bottom so the section meets the next band without
+   a seam.
+
+No photography exists yet, so `media.src` is empty and a low-contrast tonal field keyed to the
+slide's sector renders instead. Deliberately not a fake photograph. When real images arrive they
+drop into `media` and inherit the treatment unchanged.
+
+### Hero carousel
+
+Built to the APG carousel pattern, not as a bare slider. The decision worth naming is the split
+between **two different reasons rotation stops**:
+
+- `suspended` — transient. The pointer is over the hero, focus is inside it, or the tab is hidden.
+  Lifts by itself when that ends.
+- `stopped` — the user took control, by pressing pause or choosing a slide. Does **not** lift on
+  its own.
+
+Collapsing these into one flag is the standard bug: choose a slide, move the mouse away, and the
+carousel rotates off the slide you just picked. Splitting them also drives the live region
+correctly — `off` while auto-rotating so it does not narrate every automatic change, `polite` once
+the user is in control so their choice is announced.
+
+Slides are stacked in one grid cell, so the section is as tall as the tallest slide and changing
+slide causes no layout shift. Inactive slides are `inert`, so their links are not focusable.
+
+### The signature moment
+
+A vertical spine draws downward; each era unmasks horizontally *from* the spine with a `clip-path`
+wipe rather than fading up, so the motion says the line is arriving at each step in order; the year
+sets last. ~900ms for the spine, staggered 90ms per entry. The only thing on the page over 400ms
+and the only scroll-triggered animation.
+
+**It is progressive enhancement, not a motion dependency.** The markup server-renders fully
+visible — the built HTML contains `clip-path:inset(0 0 0 0)`, the resolved state. The hidden
+starting state is applied in a layout effect, before paint, and only when animation will actually
+run. No JS, reduced motion, or a stalled renderer all mean the content is simply there. Content
+that needs an animation to finish before it can be read is a bug, and it is the usual way scroll
+reveals fail.
+
+### Bugs found by testing, and fixed
+
+1. **The reveal watchdog was disarmed by the observer's own first callback.** The first version
+   treated "IntersectionObserver has called back at least once" as proof it was working. It is
+   not: IO always delivers once synchronously at `observe()` time. In a renderer that registers an
+   observer but never reports again, that initial delivery disarmed the fallback and the timeline
+   stayed clipped permanently. Replaced with a **geometry check** — read the rectangle, which
+   cannot be fooled — driven by three independent triggers: the observer, a passive scroll
+   listener, and a mount timeout for when the section is already on screen. Verified: hidden at
+   load, revealed on scroll, spine at `scaleY(1)`, all years at opacity 1.
+2. **Choosing a slide left auto-rotation running**, so the live region stayed `off` and the slide
+   was never announced — and rotation would then advance off the user's choice. Fixed by the
+   suspended/stopped split above.
+3. **`text-muted/80` on the "no date supplied" label** drifted off the measured token set — an
+   opacity modifier is a colour the contrast gate never sees. Returned to `text-muted`, which is
+   measured at 6.57:1.
+
+### Verified
+
+- Hero: 3 slides, each labelled "N of M"; inactive slides `inert` and the active one not;
+  pagination reflects and drives state; pause control present and its label flips; live region
+  `off` while rotating and `polite` once the user takes control; chosen slide is still current
+  after waiting out an interval.
+- Timeline: 6 entries; hidden at load, revealed on scroll; resolved state present in the built
+  HTML for the no-JS and reduced-motion paths.
+- 360px: zero overflowing elements, H1 30px / weight 300.
+- `npm run contrast` 11/11, typecheck clean, static export builds.
+
+Still not verifiable in this environment: how the motion actually *looks* mid-flight. The pane
+does not run `requestAnimationFrame`, so every transition is measured at its endpoints only. The
+timeline reveal and the hero cross-fade need a real browser before this is sent.

@@ -1,0 +1,70 @@
+import type { Media, Sector } from '@/content';
+
+/**
+ * The imagery rule, in one place.
+ *
+ * The audit calls for a single consistent treatment for hero media, because
+ * bright full-bleed photography pasted onto a black page looks pasted on. Two
+ * layers do that work here and are applied identically whether the media is a
+ * real photograph or the generated field:
+ *
+ *   1. The media itself, desaturated and slightly contrast-lifted.
+ *   2. A two-part scrim: horizontal from the ground colour on the reading
+ *      edge, and vertical from the bottom, so the headline sits on near-solid
+ *      ground while the far edge keeps some depth.
+ *
+ * No photography was supplied, so `src` is empty and the generated field
+ * renders instead. It is a low-contrast tonal field keyed to the slide's
+ * sector -- deliberately not a fake photograph, and not decoration competing
+ * with the headline. When real images arrive they drop into `media` and
+ * inherit this treatment unchanged.
+ */
+
+const FIELD: Record<Sector, string> = {
+  operations:
+    'radial-gradient(120% 90% at 78% 18%, #2a2419 0%, transparent 60%), radial-gradient(90% 70% at 95% 80%, #221e17 0%, transparent 55%)',
+  automation:
+    'radial-gradient(110% 85% at 82% 26%, #2b2419 0%, transparent 58%), radial-gradient(80% 60% at 62% 92%, #1f1c16 0%, transparent 60%)',
+  telecom:
+    'radial-gradient(130% 95% at 70% 12%, #272219 0%, transparent 62%), radial-gradient(70% 70% at 98% 62%, #241f18 0%, transparent 55%)',
+  media:
+    'radial-gradient(110% 80% at 85% 22%, #262118 0%, transparent 60%)',
+  education:
+    'radial-gradient(120% 90% at 74% 20%, #2c2519 0%, transparent 60%), radial-gradient(85% 65% at 92% 88%, #201d16 0%, transparent 58%)',
+  partnership:
+    'radial-gradient(115% 85% at 80% 24%, #282219 0%, transparent 60%)',
+};
+
+/** A faint lattice, sized so it reads as texture rather than as a grid. */
+const LATTICE =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M72 0H0v72' fill='none' stroke='%23d9a441' stroke-width='0.5' stroke-opacity='0.16'/%3E%3C/svg%3E\")";
+
+export function HeroField({ sector, media }: { sector: Sector; media?: Media }) {
+  const hasPhoto = Boolean(media?.src);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden" aria-hidden={!media?.alt}>
+      {hasPhoto && media ? (
+        // eslint-disable-next-line @next/next/no-img-element -- static export, no optimiser
+        <img
+          src={media.src}
+          alt={media.alt}
+          className="size-full object-cover [filter:saturate(0.7)_contrast(1.05)_brightness(0.85)]"
+        />
+      ) : (
+        <>
+          <div className="absolute inset-0" style={{ backgroundImage: FIELD[sector] }} />
+          <div
+            className="absolute inset-0 opacity-40"
+            style={{ backgroundImage: LATTICE, backgroundSize: '72px 72px' }}
+          />
+        </>
+      )}
+
+      {/* The scrim. Horizontal first so the headline edge is near-solid... */}
+      <div className="absolute inset-0 bg-gradient-to-r from-ground via-ground/85 to-ground/30" />
+      {/* ...then vertical, so the section meets the next band without a seam. */}
+      <div className="absolute inset-0 bg-gradient-to-t from-ground via-transparent to-ground/40" />
+    </div>
+  );
+}

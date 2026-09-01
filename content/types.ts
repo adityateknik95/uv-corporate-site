@@ -116,6 +116,13 @@ export interface HeroSlide {
   subline: string;
   cta: Link;
   sector: Sector;
+  /**
+   * Background media. An absent or empty `src` is the signal to render the
+   * generated field for this slide's sector instead of reaching for a stock
+   * photo. When real photography arrives it drops in here and inherits the
+   * same scrim treatment -- see NOTES.md, imagery rule.
+   */
+  media?: Media;
 }
 
 export interface HeroContent {
